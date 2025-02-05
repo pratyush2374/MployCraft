@@ -1,9 +1,11 @@
-const LandingPage: React.FC = () => {
-    return (
-        <>
-            <h1>Landing page...</h1>
-        </>
-    );
-};
+import LandingPage from "./(components)/LandingPage";
 
-export default LandingPage;
+const Landing : React.FC = () => {
+  return (
+    <>
+      <LandingPage />
+    </>
+  );
+}
+
+export default Landing;
