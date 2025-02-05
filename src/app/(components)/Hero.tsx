@@ -3,7 +3,7 @@ import Link from "next/link";
 
 const Hero: React.FC = () => {
     return (
-        <div className="relative overflow-hidden bg-white">
+        <div className="relative overflow-hidden bg-white mt-12 md:mt-0">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="flex flex-col lg:flex-row items-center justify-between py-12 lg:py-20">
                     <div className="w-full lg:w-1/2 space-y-8">
