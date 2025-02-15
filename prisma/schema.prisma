@@ -1,0 +1,126 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String           @id @default(auto()) @map("_id") @db.ObjectId
+  fullName        String
+  username        String
+  email           String           @unique
+  password        String
+  googleId        String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  jobApplications JobApplication[]
+  UserInfo        UserInfo?
+}
+
+model UserInfo {
+  id                  String           @id @default(auto()) @map("_id") @db.ObjectId
+  contactNumber       String?
+  links               Link[]
+  location            String?
+  professionalSummary String?
+  education           Education[]
+  workExperience      WorkExperience[]
+  skills              String[]
+  softSkills          String[]
+  certifications      Certification[]
+  projects            Project[]
+  languages           String[]
+  hobby               String[]
+  userId              String           @unique @db.ObjectId
+  user                User             @relation(fields: [userId], references: [id])
+}
+
+model Link {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  type       String
+  url        String
+  UserInfo   UserInfo? @relation(fields: [userInfoId], references: [id])
+  userInfoId String?   @db.ObjectId
+}
+
+model Education {
+  id            String     @id @default(auto()) @map("_id") @db.ObjectId
+  instituteName String
+  major         String?
+  startDate     DateTime
+  endDate       DateTime?
+  score         String?
+  scoreType     ScoreType?
+  achievements  String?
+  UserInfo      UserInfo?  @relation(fields: [userInfoId], references: [id])
+  userInfoId    String?    @db.ObjectId
+}
+
+enum ScoreType {
+  GPA
+  PERCENTAGE
+  CGPA
+}
+
+model WorkExperience {
+  id                              String    @id @default(auto()) @map("_id") @db.ObjectId
+  company                         String
+  jobTitle                        String
+  startDate                       DateTime
+  endDate                         DateTime?
+  isCurrent                       Boolean   @default(false)
+  location                        String?
+  achievementsAndResponsibilities String?
+  UserInfo                        UserInfo? @relation(fields: [userInfoId], references: [id])
+  userInfoId                      String?   @db.ObjectId
+}
+
+model Certification {
+  id                    String    @id @default(auto()) @map("_id") @db.ObjectId
+  name                  String
+  issuedBy              String
+  certificateIdOrURL    String?
+  additionalInformation String?
+  UserInfo              UserInfo? @relation(fields: [userInfoId], references: [id])
+  userInfoId            String?   @db.ObjectId
+}
+
+model Project {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  skillsUsed  String[]
+  description String?
+  startDate   DateTime?
+  endDate     DateTime?
+  url         String[]
+  UserInfo    UserInfo? @relation(fields: [userInfoId], references: [id])
+  userInfoId  String?   @db.ObjectId
+}
+
+model JobApplication {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  company   String
+  position  String
+  status    Status
+  appliedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  notes     String?
+  salary    Float?
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+enum Status {
+  APPLIED
+  SCREENING
+  INTERVIEW_SCHEDULED
+  TECHNICAL_ROUND
+  HR_ROUND
+  OFFER_RECEIVED
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+}
