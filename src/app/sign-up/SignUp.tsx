@@ -9,6 +9,7 @@ import usePost from "@/hooks/usePost";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import Toast from "@/lib/toastClass";
+import { encrypt } from "@/lib/encryptAndDecrypt";
 
 interface FormData {
     fullName: string;
@@ -32,11 +33,13 @@ const SignUp: React.FC = () => {
 
     const onSubmit: SubmitHandler<FormData> = async (data) => {
         await post(data);
+        localStorage.setItem("s", encrypt(data.password));
         localStorage.setItem("email", data.email);
     };
 
     useEffect(() => {
         if (resData?.success) {
+            toast(new Toast("Success", "Redirecting to verification page..."));
             router.push("/verify-code");
         }
     }, [resData]);

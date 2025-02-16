@@ -5,6 +5,10 @@ import Image from "next/image";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Eye, EyeClosed, LogIn } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { useToast } from "@/hooks/use-toast";
+import Toast from "@/lib/toastClass";
 
 interface FormData {
     identifier: string;
@@ -18,9 +22,17 @@ const SignIn: React.FC = () => {
         handleSubmit,
         formState: { errors },
     } = useForm<FormData>();
+    const router = useRouter();
+    const { toast } = useToast();
 
-    const onSubmit: SubmitHandler<FormData> = (data) => {
-        console.log(data);
+    const onSubmit: SubmitHandler<FormData> = async (data) => {
+        await signIn("credentials", {
+            redirect: false,
+            identifier: data.identifier,
+            password: data.password,
+        });
+        toast(new Toast("Success", "Logged in successfully...Redirecting"));
+        router.push("/dashboard");
     };
 
     return (

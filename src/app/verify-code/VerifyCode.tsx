@@ -2,44 +2,68 @@
 
 import React, { useEffect, useState } from "react";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import {
+    InputOTP,
+    InputOTPGroup,
+    InputOTPSlot,
+} from "@/components/ui/input-otp";
 import { KeyRound, ArrowLeft, Shield } from "lucide-react";
 import usePost from "@/hooks/usePost";
 import { useToast } from "@/hooks/use-toast";
 import Toast from "@/lib/toastClass";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { decrypt } from "@/lib/encryptAndDecrypt";
 
 const VerifyCode = () => {
     const [state, setState] = useState({
         value: "",
         email: "",
-        timer: 0
+        timer: 0,
+        s: "",
     });
-    
+
     const router = useRouter();
     const { toast } = useToast();
     const { error, loading, post } = usePost("/api/sign-up");
-    const { error: resendError, loading: resendLoading, post: resendPost } = usePost("/api/resend-code");
+    const {
+        error: resendError,
+        loading: resendLoading,
+        post: resendPost,
+    } = usePost("/api/resend-code");
 
     useEffect(() => {
         const email = localStorage.getItem("email");
-        if (!email) return router.push("/sign-up");
-        setState(prev => ({ ...prev, email }));
+        const s = localStorage.getItem("s");
+        if (!email || !s) return router.push("/sign-up");
+        setState((prev) => ({ ...prev, email, s }));
     }, []);
 
     useEffect(() => {
         if (error) {
-            toast(new Toast("Error", error || "Some error occurred while verifying code", "destructive"));
+            toast(
+                new Toast(
+                    "Error",
+                    error || "Some error occurred while verifying code",
+                    "destructive"
+                )
+            );
         }
         if (resendError) {
-            toast(new Toast("Error", resendError || "Error resending code", "destructive"));
+            toast(
+                new Toast(
+                    "Error",
+                    resendError || "Error resending code",
+                    "destructive"
+                )
+            );
         }
     }, [error, resendError]);
 
     useEffect(() => {
         if (state.timer > 0) {
             const interval = setInterval(() => {
-                setState(prev => ({ ...prev, timer: prev.timer - 1 }));
+                setState((prev) => ({ ...prev, timer: prev.timer - 1 }));
             }, 1000);
             return () => clearInterval(interval);
         }
@@ -47,11 +71,18 @@ const VerifyCode = () => {
 
     const handleVerify = async () => {
         await post({ email: state.email, code: state.value });
+        const decryptedS = decrypt(state.s);
+        await signIn("credentials", {
+            redirect: false,
+            identifier: state.email,
+            password: decryptedS,
+        });
+        router.push("/dashboard");
     };
 
     const handleResend = async () => {
         await resendPost({ email: state.email });
-        setState(prev => ({ ...prev, timer: 15 }));
+        setState((prev) => ({ ...prev, timer: 15 }));
     };
 
     const handleBack = () => {
@@ -81,7 +112,8 @@ const VerifyCode = () => {
                         Verify Your Account
                     </h2>
                     <p className="text-gray-600">
-                        We've sent a verification code to your email. Please enter it below.
+                        We've sent a verification code to your email. Please
+                        enter it below.
                     </p>
                 </div>
 
@@ -91,7 +123,9 @@ const VerifyCode = () => {
                             maxLength={6}
                             pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
                             value={state.value}
-                            onChange={(value) => setState(prev => ({ ...prev, value }))}
+                            onChange={(value) =>
+                                setState((prev) => ({ ...prev, value }))
+                            }
                             className="flex justify-center gap-2"
                         >
                             <InputOTPGroup>
@@ -103,24 +137,38 @@ const VerifyCode = () => {
 
                         <button
                             className={`w-full py-3 px-4 rounded-md flex items-center justify-center space-x-2 
-                                ${isVerifyDisabled ? "bg-blue-300 text-gray-600 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600 text-white"}`}
+                                ${
+                                    isVerifyDisabled
+                                        ? "bg-blue-300 text-gray-600 cursor-not-allowed"
+                                        : "bg-blue-500 hover:bg-blue-600 text-white"
+                                }`}
                             disabled={isVerifyDisabled}
                             onClick={handleVerify}
                         >
                             <KeyRound className="w-5 h-5" />
-                            <span>{loading ? "Verifying..." : "Verify Code"}</span>
+                            <span>
+                                {loading ? "Verifying..." : "Verify Code"}
+                            </span>
                         </button>
 
                         <p className="text-sm text-gray-600">
                             Didn't receive the code?
                             <button
-                                className={`ml-1 ${isResendDisabled ? "text-gray-800 cursor-not-allowed" : "text-blue-500 hover:text-blue-600"}`}
+                                className={`ml-1 ${
+                                    isResendDisabled
+                                        ? "text-gray-800 cursor-not-allowed"
+                                        : "text-blue-500 hover:text-blue-600"
+                                }`}
                                 onClick={handleResend}
                                 disabled={isResendDisabled}
                             >
-                                {resendLoading 
-                                    ? "Resending..." 
-                                    : `Resend ${state.timer > 0 ? `(${state.timer})` : ""}`}
+                                {resendLoading
+                                    ? "Resending..."
+                                    : `Resend ${
+                                          state.timer > 0
+                                              ? `(${state.timer})`
+                                              : ""
+                                      }`}
                             </button>
                         </p>
                     </div>
