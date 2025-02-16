@@ -36,7 +36,6 @@ export const metadata: Metadata = {
 const Page: React.FC = () => {
     return (
         <>
-            {/* <VerifyCode /> */}
             <VerifyCode />
         </>
     );

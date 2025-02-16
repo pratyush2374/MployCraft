@@ -1,73 +1,126 @@
-"use client"
+"use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
-import { KeyRound, ArrowLeft, Shield } from 'lucide-react';
+import { KeyRound, ArrowLeft, Shield } from "lucide-react";
+import usePost from "@/hooks/usePost";
+import { useToast } from "@/hooks/use-toast";
+import Toast from "@/lib/toastClass";
+import { useRouter } from "next/navigation";
 
 const VerifyCode = () => {
-    const [value, setValue] = useState("");
+    const [state, setState] = useState({
+        value: "",
+        email: "",
+        timer: 0
+    });
+    
+    const router = useRouter();
+    const { toast } = useToast();
+    const { error, loading, post } = usePost("/api/sign-up");
+    const { error: resendError, loading: resendLoading, post: resendPost } = usePost("/api/resend-code");
 
     useEffect(() => {
-        console.log(value);
-    }, [value.length == 6]);
+        const email = localStorage.getItem("email");
+        if (!email) return router.push("/sign-up");
+        setState(prev => ({ ...prev, email }));
+    }, []);
+
+    useEffect(() => {
+        if (error) {
+            toast(new Toast("Error", error || "Some error occurred while verifying code", "destructive"));
+        }
+        if (resendError) {
+            toast(new Toast("Error", resendError || "Error resending code", "destructive"));
+        }
+    }, [error, resendError]);
+
+    useEffect(() => {
+        if (state.timer > 0) {
+            const interval = setInterval(() => {
+                setState(prev => ({ ...prev, timer: prev.timer - 1 }));
+            }, 1000);
+            return () => clearInterval(interval);
+        }
+    }, [state.timer]);
+
+    const handleVerify = async () => {
+        await post({ email: state.email, code: state.value });
+    };
+
+    const handleResend = async () => {
+        await resendPost({ email: state.email });
+        setState(prev => ({ ...prev, timer: 15 }));
+    };
+
+    const handleBack = () => {
+        localStorage.removeItem("email");
+        router.push("/sign-up");
+    };
+
+    const isVerifyDisabled = state.value.length !== 6;
+    const isResendDisabled = state.timer > 0 || resendLoading;
 
     return (
         <div className="min-h-screen bg-white flex items-center justify-center p-4">
             <div className="max-w-md w-full space-y-8">
-                <div className="flex items-center mb-8">
-                    <button className="text-blue-500 hover:text-blue-600 flex items-center">
-                        <ArrowLeft className="w-5 h-5 mr-2" />
-                        <span>Back</span>
-                    </button>
-                </div>
+                <button
+                    className="text-blue-500 hover:text-blue-600 flex items-center"
+                    onClick={handleBack}
+                >
+                    <ArrowLeft className="w-5 h-5 mr-2" />
+                    <span>Back</span>
+                </button>
 
-                <div className="text-center mb-8">
+                <div className="text-center">
                     <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 mb-4">
                         <Shield className="w-8 h-8 text-blue-500" />
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Verify Your Account</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                        Verify Your Account
+                    </h2>
                     <p className="text-gray-600">
                         We've sent a verification code to your email. Please enter it below.
                     </p>
                 </div>
 
                 <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-200">
-                    <div className="flex flex-col items-center space-y-6 justify-center">
-                        <div>
-                            <InputOTP
-                                maxLength={6}
-                                pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
-                                onChange={(value) => setValue(value)}
-                                value={value}
-                                className="flex justify-center gap-2"
-                            >
-                                <InputOTPGroup>
-                                    <InputOTPSlot index={0} />
-                                    <InputOTPSlot index={1} />
-                                    <InputOTPSlot index={2} />
-                                    <InputOTPSlot index={3} />
-                                    <InputOTPSlot index={4} />
-                                    <InputOTPSlot index={5} />
-                                </InputOTPGroup>
-                            </InputOTP>
-                        </div>
+                    <div className="flex flex-col items-center space-y-6">
+                        <InputOTP
+                            maxLength={6}
+                            pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
+                            value={state.value}
+                            onChange={(value) => setState(prev => ({ ...prev, value }))}
+                            className="flex justify-center gap-2"
+                        >
+                            <InputOTPGroup>
+                                {[...Array(6)].map((_, i) => (
+                                    <InputOTPSlot key={i} index={i} />
+                                ))}
+                            </InputOTPGroup>
+                        </InputOTP>
 
-                        <button 
+                        <button
                             className={`w-full py-3 px-4 rounded-md flex items-center justify-center space-x-2 
-                                ${value.length === 6 
-                                    ? 'bg-blue-500 hover:bg-blue-600 text-white' 
-                                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}
-                            disabled={value.length !== 6}
+                                ${isVerifyDisabled ? "bg-blue-300 text-gray-600 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600 text-white"}`}
+                            disabled={isVerifyDisabled}
+                            onClick={handleVerify}
                         >
                             <KeyRound className="w-5 h-5" />
-                            <span>Verify Code</span>
+                            <span>{loading ? "Verifying..." : "Verify Code"}</span>
                         </button>
 
                         <p className="text-sm text-gray-600">
-                            Didn't receive the code? 
-                            <button className="text-blue-500 hover:text-blue-600 ml-1">
-                                Resend
+                            Didn't receive the code?
+                            <button
+                                className={`ml-1 ${isResendDisabled ? "text-gray-800 cursor-not-allowed" : "text-blue-500 hover:text-blue-600"}`}
+                                onClick={handleResend}
+                                disabled={isResendDisabled}
+                            >
+                                {resendLoading 
+                                    ? "Resending..." 
+                                    : `Resend ${state.timer > 0 ? `(${state.timer})` : ""}`}
                             </button>
                         </p>
                     </div>

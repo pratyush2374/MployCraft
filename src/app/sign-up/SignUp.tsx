@@ -12,7 +12,7 @@ import Toast from "@/lib/toastClass";
 
 interface FormData {
     fullName: string;
-    identifier: string;
+    email: string;
     password: string;
 }
 
@@ -32,7 +32,7 @@ const SignUp: React.FC = () => {
 
     const onSubmit: SubmitHandler<FormData> = async (data) => {
         await post(data);
-        localStorage.setItem("email", data.identifier);
+        localStorage.setItem("email", data.email);
     };
 
     useEffect(() => {
@@ -42,7 +42,11 @@ const SignUp: React.FC = () => {
     }, [resData]);
 
     useEffect(() => {
-        toast(new Toast("Error", "Error signing up", "destructive"));
+        if (error) {
+            toast(
+                new Toast("Error", error || "Error signing up", "destructive")
+            );
+        }
     }, [error]);
 
     return (
@@ -102,7 +106,7 @@ const SignUp: React.FC = () => {
                         </div>
                         <div>
                             <label
-                                htmlFor="identifier"
+                                htmlFor="email"
                                 className="block text-sm font-medium text-gray-700 mb-2"
                             >
                                 Email
@@ -110,8 +114,8 @@ const SignUp: React.FC = () => {
                             <div className="relative">
                                 <input
                                     type="text"
-                                    id="identifier"
-                                    {...register("identifier", {
+                                    id="email"
+                                    {...register("email", {
                                         required:
                                             "Email or username is required",
                                         minLength: {
@@ -128,9 +132,9 @@ const SignUp: React.FC = () => {
                                     className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
                                     placeholder="Enter your email or username"
                                 />
-                                {errors.identifier && (
+                                {errors.email && (
                                     <p className="text-red-500 text-xs mt-1">
-                                        {errors.identifier.message}
+                                        {errors.email.message}
                                     </p>
                                 )}
                             </div>

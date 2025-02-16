@@ -1,20 +1,15 @@
 import ApiResponse from "@/lib/apiResponse";
-import prisma from "@/lib/prismaClient";
 import redisClient from "@/lib/redisClient";
 import sendEmail from "@/lib/sendEmail";
-import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
     try {
-        const { fullName, email, password } = await req.json();
+        const { email } = await req.json();
 
-        if (!email || !fullName || !password) {
+        if (!email) {
             return NextResponse.json(
-                new ApiResponse(
-                    false,
-                    "Fullname or email or password not found"
-                ),
+                new ApiResponse(false, "Email not found"),
                 { status: 400 }
             );
         }
@@ -27,18 +22,18 @@ export async function POST(req: NextRequest) {
                 { status: 400 }
             );
         }
+        const userDataInRedis = await redisClient.get(email);
 
-        const user = await prisma.user.findUnique({ where: { email } });
-
-        if (user) {
+        if (!userDataInRedis) {
             return NextResponse.json(
-                new ApiResponse(false, "User already exists, try signing in"),
-                { status: 409 }
+                new ApiResponse(false, "Invalid request"),
+                { status: 400 }
             );
         }
 
+        const { fullName, hashedPassword } = JSON.parse(userDataInRedis);
+
         const verificationCode = Math.floor(100000 + Math.random() * 900000);
-        const hashedPassword = await bcrypt.hash(password, 10);
 
         const userDataForRedis = JSON.stringify({
             fullName,
@@ -52,7 +47,7 @@ export async function POST(req: NextRequest) {
         ]);
 
         return NextResponse.json(
-            new ApiResponse(true, "Verification code sent successfully"),
+            new ApiResponse(true, "Verification re-sent successfully"),
             { status: 200 }
         );
     } catch (error: any) {
