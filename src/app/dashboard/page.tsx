@@ -1,26 +1,42 @@
-"use client";
+import { Metadata } from "next";
+import Dashboard from "./dashboard-components/Dashboard";
 
-import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+export const metadata: Metadata = {
+    title: "Dashboard - MployCraft",
+    metadataBase: new URL("https://mploycraft.vercel.app"),
+    description:
+        "Access your MployCraft dashboard to track job applications, generate resumes and cover letters, and manage your job search.",
+    keywords:
+        "MployCraft, dashboard, job tracker, AI resume builder, cover letter generator, job search tools",
+    authors: [{ name: "Pratyush Sharma" }],
+    robots: "index, follow",
+
+    openGraph: {
+        title: "Dashboard - MployCraft",
+        description:
+            "Manage your job search with MployCraft's AI-powered dashboard for tracking applications, resumes, and cover letters.",
+        siteName: "MployCraft",
+        images: [
+            {
+                url: "/Icon.svg",
+                width: 1200,
+                height: 630,
+                alt: "MployCraft - Dashboard",
+            },
+        ],
+        type: "website",
+        locale: "en_US",
+    },
+
+    icons: {
+        icon: "/Icon.svg",
+    },
+};
 
 const Page: React.FC = () => {
-    const { data: session, status } = useSession();
-    const [data, setData] = useState<any>();
-
-    useEffect(() => {
-        if (status === "authenticated" && session) {
-            console.log(session); // Logs actual session object
-            setData(session);
-        }
-    }, [session, status]);
-
-    if (status === "loading") {
-        return <h1>Loading...</h1>;
-    }
-
     return (
         <>
-            <h1>{data ? `Welcome ${data.user?.name}` : "No session data"}</h1>
+            <Dashboard />
         </>
     );
 };
