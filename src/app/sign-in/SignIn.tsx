@@ -20,7 +20,7 @@ const SignIn: React.FC = () => {
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { isSubmitting ,errors },
     } = useForm<FormData>();
     const router = useRouter();
     const { toast } = useToast();
@@ -145,7 +145,7 @@ const SignIn: React.FC = () => {
                             type="submit"
                             className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300 ease-in-out transform hover:scale-[1.02]"
                         >
-                            <LogIn className="mr-2 h-5 w-5" /> Sign In
+                            <LogIn className="mr-2 h-5 w-5" /> {isSubmitting ? "Signing In..." : "Sign In"}
                         </button>
                     </form>
 

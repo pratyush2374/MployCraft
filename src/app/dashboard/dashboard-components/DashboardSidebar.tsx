@@ -51,12 +51,12 @@ const DashboardSidebar: React.FC<DashboardSidebar> = ({
         setCurrentTab(title);
     };
 
-    const router = useRouter()
+    const router = useRouter();
 
     const handleLogout = async () => {
-        await signOut()
-        router.push("/")
-    }
+        await signOut();
+        router.push("/");
+    };
 
     return (
         <aside

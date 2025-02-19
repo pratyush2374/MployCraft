@@ -33,7 +33,7 @@ model UserInfo {
   certifications      Certification[]
   projects            Project[]
   languages           String[]
-  hobby               String[]
+  hobbies             String[]
   userId              String           @unique @db.ObjectId
   user                User             @relation(fields: [userId], references: [id])
 }
