@@ -48,9 +48,9 @@ model Link {
 
 model Education {
   id            String     @id @default(auto()) @map("_id") @db.ObjectId
-  instituteName String
+  instituteName String?
   major         String?
-  startDate     DateTime
+  startDate     DateTime?
   endDate       DateTime?
   score         String?
   scoreType     ScoreType?
@@ -67,9 +67,9 @@ enum ScoreType {
 
 model WorkExperience {
   id                              String    @id @default(auto()) @map("_id") @db.ObjectId
-  company                         String
-  jobTitle                        String
-  startDate                       DateTime
+  company                         String?
+  jobTitle                        String?
+  startDate                       DateTime?
   endDate                         DateTime?
   isCurrent                       Boolean   @default(false)
   location                        String?

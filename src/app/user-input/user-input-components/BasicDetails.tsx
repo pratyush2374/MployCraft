@@ -34,7 +34,11 @@ interface BasicDetailsFormFields {
     links?: Links[];
 }
 
-const BasicDetails = () => {
+interface BasicDetailsProps {
+    setTab: React.Dispatch<React.SetStateAction<number>>;
+}
+
+const BasicDetails: React.FC<BasicDetailsProps> = ({ setTab }) => {
     const {
         register,
         handleSubmit,
@@ -71,10 +75,19 @@ const BasicDetails = () => {
     const onSubmit = async (data: BasicDetailsFormFields) => {
         let isBlank = links.some((link) => !link.type || !link.url);
         if (isBlank) {
-            toast(new Toast("Error", "Fill all the URLs or Delete them", "destructive"));
+            toast(
+                new Toast(
+                    "Error",
+                    "Fill all the URLs or Delete them",
+                    "destructive"
+                )
+            );
             return;
         }
-        await post(data);
+        const res = await post(data);
+        console.log(res);
+        localStorage.setItem("uii", res.data.uii)
+        setTab(2);
     };
 
     useEffect(() => {

@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
         const token = await getToken({ req });
         const userId = token?.id;
 
-        if (!token && !userId) {
+        if (!token || !userId) {
             return NextResponse.json(
                 new ApiResponse(false, "Unauthorized, Please log in "),
                 { status: 401 }
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
             },
         });
 
-        if (!(Array.isArray(links) && links.length == 0)) {
+        if (Array.isArray(links) && links.length != 0) {
             await Promise.all(
                 links.map((link: Link) =>
                     prisma.link.create({
@@ -71,7 +71,9 @@ export async function POST(req: NextRequest) {
         }
 
         return NextResponse.json(
-            new ApiResponse(true, "User's basic details saved"),
+            new ApiResponse(true, "User's basic details saved", {
+                uii: userInfo.id,
+            }),
             { status: 200 }
         );
     } catch (error: unknown) {
