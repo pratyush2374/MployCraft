@@ -101,6 +101,7 @@ const EduAndExp: React.FC<EduExpProps> = ({ setTab }) => {
                     "destructive"
                 )
             );
+            return;
         }
         const uii = localStorage.getItem("uii")
         await post({...data, uii})

@@ -81,7 +81,7 @@ model WorkExperience {
 model Certification {
   id                    String    @id @default(auto()) @map("_id") @db.ObjectId
   name                  String
-  issuedBy              String
+  issuedBy              String?
   certificateIdOrURL    String?
   additionalInformation String?
   UserInfo              UserInfo? @relation(fields: [userInfoId], references: [id])

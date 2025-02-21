@@ -102,7 +102,7 @@ export async function POST(req: NextRequest) {
         } else {
             return NextResponse.json(
                 new ApiResponse(false, "Invalid data format"),
-                { status: 200 }
+                { status: 400 }
             );
         }
 

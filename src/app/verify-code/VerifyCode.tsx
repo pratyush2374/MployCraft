@@ -77,7 +77,8 @@ const VerifyCode = () => {
             identifier: state.email,
             password: decryptedS,
         });
-        router.push("/dashboard");
+        localStorage.setItem("fromSignIn", "yeahBro")
+        router.push("/user-input");
     };
 
     const handleResend = async () => {

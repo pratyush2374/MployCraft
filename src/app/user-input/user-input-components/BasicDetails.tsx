@@ -187,7 +187,9 @@ const BasicDetails: React.FC<BasicDetailsProps> = ({ setTab }) => {
                     <FileText className="mr-2 text-blue-500" />
                     Basic Details
                 </h1>
-                <h2>Step 1/3 </h2>
+                <h2 className="text-xl font-semibold text-gray-600">
+                    Step 3/3
+                </h2>
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

@@ -20,6 +20,21 @@ export async function POST(req: NextRequest) {
             );
         }
 
+        const userInfoExists = await prisma.userInfo.findFirst({
+            where: { userId },
+        });
+
+        console.log(userInfoExists);
+
+        if (userInfoExists) {
+            return NextResponse.json(
+                new ApiResponse(true, "User info already exists", {
+                    uii: userInfoExists.id,
+                }),
+                { status: 200 }
+            );
+        }
+
         const {
             contactNumber,
             location,
