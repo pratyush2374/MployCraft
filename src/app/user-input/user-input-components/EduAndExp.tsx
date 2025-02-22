@@ -43,7 +43,13 @@ interface EduExpProps {
 }
 
 const EduAndExp: React.FC<EduExpProps> = ({ setTab }) => {
-    const { register, control, handleSubmit, watch } = useForm<FormData>({
+    const {
+        register,
+        control,
+        handleSubmit,
+        watch,
+        formState: { isSubmitting, errors },
+    } = useForm<FormData>({
         defaultValues: {
             education: [
                 {
@@ -88,9 +94,9 @@ const EduAndExp: React.FC<EduExpProps> = ({ setTab }) => {
     });
 
     const { toast } = useToast();
-    const {error, post} = usePost("/api/save-edu-exp")
-  
-    const onSubmit = async(data: FormData) => {
+    const { error, post } = usePost("/api/save-edu-exp");
+
+    const onSubmit = async (data: FormData) => {
         let isBlankEdu = data.education.some((edu) => !edu.instituteName);
         let isBlankExp = data.experience.some((exp) => !exp.company);
         if (isBlankEdu || isBlankExp) {
@@ -103,9 +109,9 @@ const EduAndExp: React.FC<EduExpProps> = ({ setTab }) => {
             );
             return;
         }
-        const uii = localStorage.getItem("uii")
-        await post({...data, uii})
-        setTab(3)
+        const uii = localStorage.getItem("uii");
+        await post({ ...data, uii });
+        setTab(3);
     };
 
     useEffect(() => {
@@ -119,6 +125,19 @@ const EduAndExp: React.FC<EduExpProps> = ({ setTab }) => {
             );
         }
     }, [error]);
+
+    useEffect(() => {
+        if (errors.education || errors.experience) {
+            console.log("i am here");
+            toast(
+                new Toast(
+                    "Invalid Date",
+                    "Please enter a valid date",
+                    "destructive"
+                )
+            );
+        }
+    }, [errors, errors.education, errors.experience]);
 
     const watchExperienceFields = watch("experience");
 
@@ -217,7 +236,14 @@ const EduAndExp: React.FC<EduExpProps> = ({ setTab }) => {
                                         <input
                                             type="date"
                                             {...register(
-                                                `education.${index}.startDate`
+                                                `education.${index}.startDate`,
+                                                {
+                                                    maxLength: {
+                                                        value: 10,
+                                                        message:
+                                                            "Enter a valid date",
+                                                    },
+                                                }
                                             )}
                                             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
                                         />
@@ -236,7 +262,14 @@ const EduAndExp: React.FC<EduExpProps> = ({ setTab }) => {
                                         <input
                                             type="date"
                                             {...register(
-                                                `education.${index}.endDate`
+                                                `education.${index}.endDate`,
+                                                {
+                                                    maxLength: {
+                                                        value: 10,
+                                                        message:
+                                                            "Enter a valid date",
+                                                    },
+                                                }
                                             )}
                                             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
                                         />
@@ -364,7 +397,14 @@ const EduAndExp: React.FC<EduExpProps> = ({ setTab }) => {
                                         <input
                                             type="date"
                                             {...register(
-                                                `experience.${index}.startDate`
+                                                `experience.${index}.startDate`,
+                                                {
+                                                    maxLength: {
+                                                        value: 10,
+                                                        message:
+                                                            "Enter a valid date",
+                                                    },
+                                                }
                                             )}
                                             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
                                         />
@@ -383,7 +423,14 @@ const EduAndExp: React.FC<EduExpProps> = ({ setTab }) => {
                                         <input
                                             type="date"
                                             {...register(
-                                                `experience.${index}.endDate`
+                                                `experience.${index}.endDate`,
+                                                {
+                                                    maxLength: {
+                                                        value: 10,
+                                                        message:
+                                                            "Enter a valid date",
+                                                    },
+                                                }
                                             )}
                                             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
                                             disabled={
@@ -449,7 +496,7 @@ const EduAndExp: React.FC<EduExpProps> = ({ setTab }) => {
                     type="submit"
                     className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition-colors font-semibold"
                 >
-                    Save Details
+                    {isSubmitting ? "Saving..." : "Save Details"}
                 </button>
             </form>
         </div>

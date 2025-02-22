@@ -14,8 +14,6 @@ interface Project {
     title: string;
     skillsUsed?: string[];
     description?: string;
-    startDate?: string;
-    endDate?: string;
     url?: string[];
 }
 
@@ -37,16 +35,9 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const {
-            certifications = [],
-            projects = [],
-            uii,
-        }: RequestBody = await req.json();
-
-        console.log(uii);
+        let { certifications, projects, uii }: RequestBody = await req.json();
 
         let userInfoId = uii;
-
         if (!userInfoId) {
             const userInfo = await prisma.userInfo.findUnique({
                 where: { userId },
@@ -59,7 +50,7 @@ export async function POST(req: NextRequest) {
                     { status: 404 }
                 );
             }
-            userInfoId = userInfo.id;
+            userInfoId = userInfo.id as string;
         }
 
         if (!Array.isArray(projects) || !Array.isArray(certifications)) {
@@ -84,43 +75,55 @@ export async function POST(req: NextRequest) {
         }
 
         // Filter out empty values from each project and certification
-        const cleanProjects = projects
-            .map((p) =>
-                Object.fromEntries(
-                    Object.entries(p).filter(([_, v]) => v != null && v !== "")
+        if (projects.length > 0) {
+            const cleanProjects = projects
+                .map((p) =>
+                    Object.fromEntries(
+                        Object.entries(p).filter(
+                            ([_, v]) => v != null && v !== ""
+                        )
+                    )
                 )
-            )
-            .filter((p) => Object.keys(p).length > 0);
+                .filter((p) => Object.keys(p).length > 0);
 
-        const cleanCertifications = certifications
-            .map((c) =>
-                Object.fromEntries(
-                    Object.entries(c).filter(([_, v]) => v != null && v !== "")
+            if (cleanProjects.length > 0) {
+                await prisma.$transaction([
+                    ...cleanProjects.map((proj) => {
+                        return prisma.project.create({
+                            data: {
+                                title: proj.title,
+                                ...proj,
+                                UserInfo: { connect: { id: userInfoId } },
+                            },
+                        });
+                    }),
+                ]);
+            }
+        }
+        if (certifications.length > 0) {
+            const cleanCertifications = certifications
+                .map((c) =>
+                    Object.fromEntries(
+                        Object.entries(c).filter(
+                            ([_, v]) => v != null && v !== ""
+                        )
+                    )
                 )
-            )
-            .filter((c) => Object.keys(c).length > 0);
+                .filter((c) => Object.keys(c).length > 0);
 
-        if (cleanProjects.length > 0 || cleanCertifications.length > 0) {
-            await prisma.$transaction([
-                ...cleanProjects.map((proj) =>
-                    prisma.project.create({
-                        data: {
-                            title: proj.title,
-                            ...proj,
-                            UserInfo: { connect: { id: userInfoId } },
-                        },
-                    })
-                ),
-                ...cleanCertifications.map((cert) =>
-                    prisma.certification.create({
-                        data: {
-                            name: cert.name,
-                            ...cert,
-                            UserInfo: { connect: { id: userInfoId } },
-                        },
-                    })
-                ),
-            ]);
+            if (cleanCertifications.length > 0) {
+                await prisma.$transaction([
+                    ...cleanCertifications.map((cert) =>
+                        prisma.certification.create({
+                            data: {
+                                name: cert.name,
+                                ...cert,
+                                UserInfo: { connect: { id: userInfoId } },
+                            },
+                        })
+                    ),
+                ]);
+            }
         }
 
         return NextResponse.json(
@@ -130,15 +133,31 @@ export async function POST(req: NextRequest) {
             ),
             { status: 200 }
         );
-    } catch (error : unknown) {
-        console.log(error);
+    } catch (error: unknown) {
+        // Enhanced error logging
+        console.error("Error details:");
+        console.error("Error object:", error);
+
+        if (error instanceof Error) {
+            console.error("Error name:", error.name);
+            console.error("Error message:", error.message);
+            console.error("Error stack:", error.stack);
+
+            // If it's a Prisma error, it might have additional details
+            if ("code" in error) {
+                console.error("Error code:", (error as any).code);
+            }
+
+            return NextResponse.json(
+                new ApiResponse(false, `${error.name}: ${error.message}`),
+                { status: 500 }
+            );
+        }
+
+        // For non-Error objects
+        console.error("Non-Error object thrown:", typeof error);
         return NextResponse.json(
-            new ApiResponse(
-                false,
-                error instanceof Error
-                    ? error.message
-                    : "An unknown error occurred"
-            ),
+            new ApiResponse(false, "An unknown error occurred"),
             { status: 500 }
         );
     }

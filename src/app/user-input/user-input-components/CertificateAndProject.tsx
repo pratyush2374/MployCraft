@@ -3,7 +3,6 @@ import {
     FileText,
     Plus,
     Trash,
-    Calendar,
     Link,
     Award,
     Building2,
@@ -14,7 +13,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { useToast } from "@/hooks/use-toast";
 import Toast from "@/lib/toastClass";
 import usePost from "@/hooks/usePost";
-
+import { useRouter } from "next/navigation";
 
 interface Certification {
     name: string;
@@ -27,8 +26,6 @@ interface Project {
     title: string;
     skillsUsed: string[];
     description: string;
-    startDate: string;
-    endDate: string;
     url: string[];
 }
 
@@ -44,7 +41,7 @@ const CertificateAndProject: React.FC = () => {
         watch,
         setValue,
         control,
-        formState: { isSubmitting },
+        formState: { isSubmitting, errors },
     } = useForm<FormData>({
         defaultValues: {
             certifications: [
@@ -60,8 +57,6 @@ const CertificateAndProject: React.FC = () => {
                     title: "",
                     skillsUsed: [],
                     description: "",
-                    startDate: "",
-                    endDate: "",
                     url: [],
                 },
             ],
@@ -101,19 +96,36 @@ const CertificateAndProject: React.FC = () => {
         setValue(`projects.${projectIndex}.${field}`, newValues);
     };
 
-    const {toast} = useToast()
-    const {error, post} =  usePost("/api/save-proj-cert")
-    
-    const onSubmit = async(data: FormData) => {
-        const areProjectTitleBlank = data.projects.some(project => !project.title)
-        const areCertificationsBlank = data.certifications.some(cet => !cet.name)
+    const { toast } = useToast();
+    const router = useRouter();
+    const { error, post } = usePost("/api/save-proj-cert");
+
+    const onSubmit = async (data: FormData) => {
+        const areProjectTitleBlank = data.projects.some(
+            (project) => !project.title
+        );
+        const areCertificationsBlank = data.certifications.some(
+            (cet) => !cet.name
+        );
         if (areProjectTitleBlank || areCertificationsBlank) {
-            toast(new Toast("Error", "Please enter title/name for projects and certifications, else remove them", "destructive"))
+            toast(
+                new Toast(
+                    "Error",
+                    "Please enter title/name for projects and certifications, else remove them",
+                    "destructive"
+                )
+            );
             return;
         }
-        const uii = localStorage.getItem("uii")
-        await post({...data, uii})
 
+        if (errors.projects) {
+            console.log(errors.projects);
+        }
+        console.log(data);
+        const uii = localStorage.getItem("uii");
+        await post({ ...data, uii });
+        localStorage.clear();
+        router.push("/dashboard");
     };
 
     useEffect(() => {
@@ -127,7 +139,18 @@ const CertificateAndProject: React.FC = () => {
             );
         }
     }, [error]);
-    
+
+    useEffect(() => {
+        if (errors.projects) {
+            toast(
+                new Toast(
+                    "Invalid Date",
+                    "Please enter a valid date",
+                    "destructive"
+                )
+            );
+        }
+    }, [errors, errors.projects]);
 
     return (
         <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg mt-10">
@@ -265,8 +288,6 @@ const CertificateAndProject: React.FC = () => {
                                     title: "",
                                     skillsUsed: [],
                                     description: "",
-                                    startDate: "",
-                                    endDate: "",
                                     url: [],
                                 })
                             }
@@ -299,44 +320,6 @@ const CertificateAndProject: React.FC = () => {
                                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
                                         placeholder="Enter project title"
                                     />
-                                </div>
-
-                                <div>
-                                    <label className="block text-gray-600 mb-2">
-                                        Start Date
-                                    </label>
-                                    <div className="relative">
-                                        <Calendar
-                                            className="absolute left-3 top-3 text-gray-400"
-                                            size={20}
-                                        />
-                                        <input
-                                            type="date"
-                                            {...register(
-                                                `projects.${index}.startDate`
-                                            )}
-                                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label className="block text-gray-600 mb-2">
-                                        End Date
-                                    </label>
-                                    <div className="relative">
-                                        <Calendar
-                                            className="absolute left-3 top-3 text-gray-400"
-                                            size={20}
-                                        />
-                                        <input
-                                            type="date"
-                                            {...register(
-                                                `projects.${index}.endDate`
-                                            )}
-                                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                                        />
-                                    </div>
                                 </div>
 
                                 <div className="md:col-span-2">

@@ -93,8 +93,6 @@ model Project {
   title       String
   skillsUsed  String[]
   description String?
-  startDate   DateTime?
-  endDate     DateTime?
   url         String[]
   UserInfo    UserInfo? @relation(fields: [userInfoId], references: [id])
   userInfoId  String?   @db.ObjectId
