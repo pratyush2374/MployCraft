@@ -41,7 +41,7 @@ const Dashboard: React.FC = () => {
 
             <span
                 onClick={() => setSidebarOpen((curr) => !curr)}
-                className={`transition-all absolute duration-300 ${
+                className={`transition-all duration-300 fixed ${
                     sidebarOpen ? "ml-64" : "ml-0"
                 } p-3 text-blue-500`}
             >
@@ -50,7 +50,7 @@ const Dashboard: React.FC = () => {
 
             <main
                 className={`p-10 pt-20 md:w-3/4 m-auto ${
-                    sidebarOpen ? "md:ml-64" : ""
+                    sidebarOpen ? "md:ml-72" : ""
                 }`}
                 onClick={handleClickOnMobile}
             >
