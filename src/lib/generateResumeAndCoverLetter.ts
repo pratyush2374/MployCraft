@@ -7,12 +7,18 @@ import {
 interface AiResponse {
     professionalSummary: string;
     experience: string[];
+    salary?: string;
+    coverLetter: string;
 }
 
-const generateResume = async (userData: any): Promise<AiResponse> => {
+const generateResumeAndCoverLetter = async (
+    userData: any,
+    companyName: string,
+    position: string,
+    jobDescription: string
+): Promise<AiResponse> => {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
-    // Define the schema for the response
     const schema: ObjectSchema = {
         type: SchemaType.OBJECT,
         description: "asd",
@@ -32,8 +38,18 @@ const generateResume = async (userData: any): Promise<AiResponse> => {
                 description:
                     "Array of experience items, up to 6 entries of approximately 30 words each",
             },
+            salary: {
+                type: SchemaType.STRING,
+                description:
+                    "Add the salary if it is mentioned in the job description",
+            },
+            coverLetter: {
+                type: SchemaType.STRING,
+                description:
+                    "Write a 120 word cover letter based on the job description start directly without greeting just the cover letter no Dear sir/madam, hiring team and all",
+            },
         },
-        required: ["professionalSummary", "experience"],
+        required: ["professionalSummary", "experience", "coverLetter"],
     };
 
     // Configure the model
@@ -41,7 +57,7 @@ const generateResume = async (userData: any): Promise<AiResponse> => {
         model: "gemini-1.5-flash",
         generationConfig: {
             responseMimeType: "application/json",
-            responseSchema: schema, 
+            responseSchema: schema,
         },
     });
 
@@ -96,9 +112,16 @@ const generateResume = async (userData: any): Promise<AiResponse> => {
             .join("\n\n") || "No education information available";
 
     // Create the prompt
-    const prompt = `Create a professional resume content for ${
-        userData.fullName
-    } based on the following information:
+    const prompt = `Create a professional resume content based on the job description 
+    
+    Job description : 
+    ${jobDescription}
+
+    for the company: ${companyName} and for position ${position} and a cover letter with the same
+
+    tune the professional summary and experience according to the job summary
+    
+    for ${userData.fullName} based on the following information:
 
     Full Name: ${userData.fullName}
     Email: ${userData.email}
@@ -122,7 +145,7 @@ const generateResume = async (userData: any): Promise<AiResponse> => {
     ${certificationsInfo}
     
     Please provide:
-    1. A professional summary of exactly 100 words highlighting key skills, experiences, and qualifications.
+    1. A professional summary of exactly 100 words highlighting key skills, experiences, and qualifications according to the job description company name and job position
     2. Up to 6 concise experience descriptions of approximately 30 words each, combining projects, work experience, and certifications in order of relevance. Each description should highlight achievements and responsibilities.
     
     Ensure the content is professional, concise, and highlights the strongest qualifications for a career in technology.`;
@@ -135,4 +158,4 @@ const generateResume = async (userData: any): Promise<AiResponse> => {
     return resumeData;
 };
 
-export default generateResume;
+export default generateResumeAndCoverLetter;

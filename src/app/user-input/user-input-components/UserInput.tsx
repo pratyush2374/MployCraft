@@ -17,7 +17,7 @@ const LoadingComponent = () => (
 );
 
 const UserInput = () => {
-  const [tab, setTab] = useState<number>(3);
+  const [tab, setTab] = useState<number>(1);
   const router = useRouter();
 
   useEffect(() => {
