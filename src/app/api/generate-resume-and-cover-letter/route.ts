@@ -21,6 +21,7 @@ export async function POST(req: NextRequest) {
                 { status: 401 }
             );
         }
+        const userId = token.id;
 
         const {
             companyName,
@@ -40,7 +41,6 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const userId = token.id;
         const user = await prisma.user.findUnique({
             where: { id: userId },
             select: {
@@ -78,17 +78,7 @@ export async function POST(req: NextRequest) {
         );
 
         if (trackJob) {
-            await prisma.resumes.create({
-                data: {
-                    professionalSummary: dataFromAI.professionalSummary,
-                    experience: dataFromAI.experience,
-                    companyName,
-                    position,
-                    user: { connect: { id: userId } },
-                },
-            });
-
-            await prisma.jobApplication.create({
+            const jobApplication = await prisma.jobApplication.create({
                 data: {
                     company: companyName,
                     position,
@@ -97,10 +87,25 @@ export async function POST(req: NextRequest) {
                     salary: dataFromAI?.salary || null,
                 },
             });
+            await prisma.resumesAndCoverLetters.create({
+                data: {
+                    professionalSummary: dataFromAI.professionalSummary,
+                    experience: dataFromAI.experience,
+                    companyName,
+                    position,
+                    coverLetter: dataFromAI.coverLetter,
+                    user: { connect: { id: userId } },
+                    jobApplication: { connect: { id: jobApplication.id } },
+                },
+            });
         }
 
         return NextResponse.json(
-            new ApiResponse(true, "Resume and cover letter generated", dataFromAI)
+            new ApiResponse(
+                true,
+                "Resume and cover letter generated",
+                dataFromAI
+            )
         );
     } catch (error) {
         console.log(error);

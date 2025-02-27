@@ -18,8 +18,8 @@ export async function GET(req: NextRequest) {
                 { status: 401 }
             );
         }
-
         const userId = token.id;
+
         const user = await prisma.user.findUnique({
             where: { id: userId },
             select: {
@@ -51,7 +51,7 @@ export async function GET(req: NextRequest) {
 
         const data: AiResponse = await generateResume(filteredData);
 
-        await prisma.resumes.create({
+        await prisma.resumesAndCoverLetters.create({
             data: {
                 professionalSummary: data.professionalSummary,
                 experience: data.experience,

@@ -46,7 +46,7 @@ const generateResumeAndCoverLetter = async (
             coverLetter: {
                 type: SchemaType.STRING,
                 description:
-                    "Write a 120 word cover letter based on the job description start directly without greeting just the cover letter no Dear sir/madam, hiring team and all",
+                    "Write a 120 word cover letter in first person based on the job description start directly without greeting just the cover letter no Dear sir/madam, hiring team and all",
             },
         },
         required: ["professionalSummary", "experience", "coverLetter"],
@@ -117,7 +117,7 @@ const generateResumeAndCoverLetter = async (
     Job description : 
     ${jobDescription}
 
-    for the company: ${companyName} and for position ${position} and a cover letter with the same
+    for the company: ${companyName} and for position ${position} and a cover letter in first person with the same
 
     tune the professional summary and experience according to the job summary
     
