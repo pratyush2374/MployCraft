@@ -8,7 +8,6 @@ interface RequestInterface {
     companyName: string;
     position: string;
     jobDescription: string;
-    trackJob: boolean;
     notes?: string;
 }
 
@@ -23,15 +22,16 @@ export async function POST(req: NextRequest) {
         }
         const userId = token.id;
 
+        // const userId = "67bea8095adb02bf9df69bad";
+
         const {
             companyName,
             position,
             jobDescription,
-            trackJob,
             notes,
         }: RequestInterface = await req.json();
 
-        if (!companyName || !position || !jobDescription || !trackJob) {
+        if (!companyName || !position || !jobDescription) {
             return NextResponse.json(
                 new ApiResponse(
                     false,
@@ -77,17 +77,17 @@ export async function POST(req: NextRequest) {
             jobDescription
         );
 
-        if (trackJob) {
-            const jobApplication = await prisma.jobApplication.create({
-                data: {
-                    company: companyName,
-                    position,
-                    user: { connect: { id: userId } },
-                    notes,
-                    salary: dataFromAI?.salary || null,
-                },
-            });
-            await prisma.resumesAndCoverLetters.create({
+        const jobApplication = await prisma.jobApplication.create({
+            data: {
+                company: companyName,
+                position,
+                user: { connect: { id: userId } },
+                notes,
+                salary: dataFromAI?.salary || null,
+            },
+        });
+        const resumeAndCoverLetter = await prisma.resumesAndCoverLetters.create(
+            {
                 data: {
                     professionalSummary: dataFromAI.professionalSummary,
                     experience: dataFromAI.experience,
@@ -97,15 +97,16 @@ export async function POST(req: NextRequest) {
                     user: { connect: { id: userId } },
                     jobApplication: { connect: { id: jobApplication.id } },
                 },
-            });
-        }
+            }
+        );
 
         return NextResponse.json(
-            new ApiResponse(
-                true,
-                "Resume and cover letter generated",
-                dataFromAI
-            )
+            new ApiResponse(true, "Resume and cover letter generated", {
+                coverLetter: dataFromAI.coverLetter,
+                rcid: resumeAndCoverLetter!.id,
+                companyName,
+                position,
+            })
         );
     } catch (error) {
         console.log(error);

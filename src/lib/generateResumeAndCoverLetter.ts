@@ -120,6 +120,7 @@ const generateResumeAndCoverLetter = async (
     for the company: ${companyName} and for position ${position} and a cover letter in first person with the same
 
     tune the professional summary and experience according to the job summary
+    if the skills do not match with the job description do not lie about it write only the skills that are common between the job description and the user's data
     
     for ${userData.fullName} based on the following information:
 
@@ -147,6 +148,8 @@ const generateResumeAndCoverLetter = async (
     Please provide:
     1. A professional summary of exactly 100 words highlighting key skills, experiences, and qualifications according to the job description company name and job position
     2. Up to 6 concise experience descriptions of approximately 30 words each, combining projects, work experience, and certifications in order of relevance. Each description should highlight achievements and responsibilities.
+    3. Make sure your grammar is correct and please don't lie if the skills don't match with the job description
+    4. Also in the cover letter say that how my goals are aligned with the job description and the company
     
     Ensure the content is professional, concise, and highlights the strongest qualifications for a career in technology.`;
 
