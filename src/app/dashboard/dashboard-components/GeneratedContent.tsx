@@ -54,7 +54,7 @@ const GeneratedContent: React.FC<GeneratedResumeContentProps> = ({
                     {data.coverLetter}
                 </p>
                 <Link
-                    href={`/resume/${data.rcid}`}
+                    href={`/applications/${data.rcid}`}
                     className="inline-flex items-center text-blue-500 text-sm font-medium hover:text-blue-700 transition-colors"
                 >
                     View full application{" "}

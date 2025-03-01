@@ -3,6 +3,7 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import DashboardSidebar from "./DashboardSidebar";
 import { PanelRightOpen } from "lucide-react";
+import { useParams } from "next/navigation";
 
 const Home = lazy(() => import("./Home"));
 const ColdEmailing = lazy(() => import("./ColdEmailing"));
@@ -11,8 +12,8 @@ const QuickApply = lazy(() => import("./QuickApply"));
 const ProfileSettings = lazy(() => import("./ProfileSettings"));
 
 const Dashboard: React.FC = () => {
-    const [currentTab, setCurrentTab] = useState<string>("Home");
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
+    const { section } = useParams<{ section: string }>();
 
     useEffect(() => {
         let int: NodeJS.Timeout;
@@ -34,10 +35,7 @@ const Dashboard: React.FC = () => {
 
     return (
         <>
-            <DashboardSidebar
-                setCurrentTab={setCurrentTab}
-                sidebarOpen={sidebarOpen}
-            />
+            <DashboardSidebar sidebarOpen={sidebarOpen} />
 
             <span
                 onClick={() => setSidebarOpen((curr) => !curr)}
@@ -61,13 +59,11 @@ const Dashboard: React.FC = () => {
                         </div>
                     }
                 >
-                    {currentTab === "Home" && <Home />}
-                    {currentTab === "Cold emailing" && <ColdEmailing />}
-                    {currentTab === "Track applications" && (
-                        <TrackApplications />
-                    )}
-                    {currentTab === "Quick apply" && <QuickApply />}
-                    {currentTab === "Profile settings" && <ProfileSettings />}
+                    {section === "home" && <Home />}
+                    {section === "cold-emailing" && <ColdEmailing />}
+                    {section === "applications" && <TrackApplications />}
+                    {section === "quick-apply" && <QuickApply />}
+                    {section === "profile-settings" && <ProfileSettings />}
                 </Suspense>
             </main>
         </>

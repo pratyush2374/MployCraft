@@ -8,11 +8,10 @@ import {
     LogOut,
 } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import React from "react";
+import { useParams, useRouter } from "next/navigation";
+import React, { useEffect } from "react";
 
 interface DashboardSidebar {
-    setCurrentTab: React.Dispatch<React.SetStateAction<string>>;
     sidebarOpen: boolean;
 }
 
@@ -20,39 +19,45 @@ const items = [
     {
         title: "Home",
         icon: Home,
+        url: "home",
     },
     {
         title: "Cold emailing",
         icon: Mail,
+        url: "cold-emailing",
     },
     {
         title: "Track applications",
         icon: NotebookPen,
+        url: "applications",
     },
     {
         title: "Quick apply",
         icon: FileCheck2,
+        url: "quick-apply",
     },
     {
         title: "Profile settings",
         icon: UserCog,
+        url: "profile-settings",
     },
 ];
 
-const DashboardSidebar: React.FC<DashboardSidebar> = ({
-    setCurrentTab,
-    sidebarOpen,
-}) => {
+const DashboardSidebar: React.FC<DashboardSidebar> = ({ sidebarOpen }) => {
     const { data } = useSession();
     const [activeTab, setActiveTab] = React.useState("Home");
+    const router = useRouter();
+    const { section } = useParams();
 
-    const handleTabClick = (title: string) => {
-        setActiveTab(title);
-        setCurrentTab(title);
+    const handleTabClick = (url: string) => {
+        router.push(`/dashboard/${url}`);
     };
 
-    const router = useRouter();
-
+    useEffect(() => {
+        if (section) {
+            setActiveTab(section as string);
+        }
+    }, []);
     const handleLogout = async () => {
         await signOut();
         router.push("/");
@@ -86,16 +91,16 @@ const DashboardSidebar: React.FC<DashboardSidebar> = ({
                 {items.map((item, index) => (
                     <button
                         key={index}
-                        onClick={() => handleTabClick(item.title)}
+                        onClick={() => handleTabClick(item.url)}
                         className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-150 ${
-                            activeTab === item.title
+                            activeTab === item.url
                                 ? "bg-blue-500 text-white"
                                 : "text-gray-600 hover:bg-blue-50"
                         }`}
                     >
                         <item.icon
                             className={`w-5 h-5 ${
-                                activeTab === item.title
+                                activeTab === item.url
                                     ? "text-white"
                                     : "text-blue-500"
                             }`}
