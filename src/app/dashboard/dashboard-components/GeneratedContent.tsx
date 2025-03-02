@@ -7,6 +7,8 @@ import {
     ArrowRight,
 } from "lucide-react";
 import Link from "next/link";
+import { useToast } from "@/hooks/use-toast";
+import Toast from "@/lib/toastClass";
 
 interface GeneratedResumeContentProps {
     data: any;
@@ -17,12 +19,27 @@ const GeneratedContent: React.FC<GeneratedResumeContentProps> = ({
     data,
     setGenerated,
 }) => {
+    const { toast } = useToast();
     const handleResumeDownload = () => {
-        console.log("Clicked");
+        if (data.rcid) {
+            window.open(
+                `http://localhost:3000/api/generate-pdf-resume?rcid=${data.rcid}`,
+                "_blank"
+            );
+        } else {
+            toast(new Toast("Error", "Something went wrong", "destructive"));
+        }
     };
 
     const handleCoverLetterDownload = () => {
-        console.log("Clicked");
+        if (data.rcid) {
+            window.open(
+                `http://localhost:3000/api/generate-cover-letter?rcid=${data.rcid}`,
+                "_blank"
+            );
+        } else {
+            toast(new Toast("Error", "Something went wrong", "destructive"));
+        }
     };
     return (
         <div className="bg-white rounded-3xl shadow-lg p-8 w-full max-w-5xl mx-auto">

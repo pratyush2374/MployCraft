@@ -5,7 +5,7 @@ import {
 } from "@google/generative-ai";
 
 interface AiResponse {
-    professionalSummary: string;
+    professionalSummaryRC: string;
     experience: string[];
     salary?: string;
     coverLetter: string;
@@ -23,7 +23,7 @@ const generateResumeAndCoverLetter = async (
         type: SchemaType.OBJECT,
         description: "asd",
         properties: {
-            professionalSummary: {
+            professionalSummaryRC: {
                 type: SchemaType.STRING,
                 description:
                     "A concise professional summary of approximately 100 words highlighting key skills and experiences",
@@ -49,7 +49,7 @@ const generateResumeAndCoverLetter = async (
                     "Write a 120 word cover letter in first person based on the job description start directly without greeting just the cover letter no Dear sir/madam, hiring team and all",
             },
         },
-        required: ["professionalSummary", "experience", "coverLetter"],
+        required: ["professionalSummaryRC", "experience", "coverLetter"],
     };
 
     // Configure the model

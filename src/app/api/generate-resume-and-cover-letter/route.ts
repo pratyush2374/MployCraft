@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
         const resumeAndCoverLetter = await prisma.resumesAndCoverLetters.create(
             {
                 data: {
-                    professionalSummary: dataFromAI.professionalSummary,
+                    professionalSummaryRC: dataFromAI.professionalSummaryRC,
                     experience: dataFromAI.experience,
                     companyName,
                     position,
