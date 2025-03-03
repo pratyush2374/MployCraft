@@ -1,14 +1,24 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
     CheckCircle,
     FileText,
     Download,
     RefreshCw,
     ArrowRight,
+    Send,
+    MessageSquare,
+    Mail,
 } from "lucide-react";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import Toast from "@/lib/toastClass";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface GeneratedResumeContentProps {
     data: any;
@@ -20,6 +30,8 @@ const GeneratedContent: React.FC<GeneratedResumeContentProps> = ({
     setGenerated,
 }) => {
     const { toast } = useToast();
+    const sal = useRef<HTMLInputElement>(null);
+
     const handleResumeDownload = () => {
         if (data.rcid) {
             window.open(
@@ -32,15 +44,21 @@ const GeneratedContent: React.FC<GeneratedResumeContentProps> = ({
     };
 
     const handleCoverLetterDownload = () => {
+        if (!sal.current?.value) {
+            toast(new Toast("Error", "Please enter salutation", "destructive"));
+            return;
+        }
+
         if (data.rcid) {
             window.open(
-                `http://localhost:3000/api/generate-cover-letter?rcid=${data.rcid}`,
+                `http://localhost:3000/api/generate-pdf-cover-letter?rcid=${data.rcid}&sal=${sal.current.value}`,
                 "_blank"
             );
         } else {
             toast(new Toast("Error", "Something went wrong", "destructive"));
         }
     };
+
     return (
         <div className="bg-white rounded-3xl shadow-lg p-8 w-full max-w-5xl mx-auto">
             <div className="flex items-center mb-6">
@@ -87,14 +105,46 @@ const GeneratedContent: React.FC<GeneratedResumeContentProps> = ({
                     <Download size={18} className="mr-2" />
                     Download Resume
                 </button>
-
-                <button
-                    onClick={handleCoverLetterDownload}
-                    className="flex items-center justify-center border border-blue-500 text-blue-500 py-3 px-4 rounded-lg hover:bg-blue-50 transition-colors"
-                >
-                    <FileText size={18} className="mr-2" />
-                    Download Cover Letter
-                </button>
+                <Dialog>
+                    <DialogTrigger className="flex items-center justify-center border border-blue-500 text-blue-500 py-3 px-4 rounded-lg hover:bg-blue-50 transition-colors">
+                        <FileText size={18} className="mr-2" />
+                        Download Cover Letter
+                    </DialogTrigger>
+                    <DialogContent className="bg-white rounded-lg shadow-lg border border-blue-100 p-6 max-w-md mx-auto">
+                        <DialogHeader className="space-y-4">
+                            <div className="flex items-center space-x-2">
+                                <MessageSquare className="text-blue-500 w-5 h-5" />
+                                <DialogTitle>
+                                    <h1 className="text-xl font-semibold text-gray-800">
+                                        Customize Your Greeting
+                                    </h1>
+                                </DialogTitle>
+                            </div>
+                            <p className="text-sm text-gray-500">
+                                Add a personal touch to your application with a
+                                custom salutation.
+                            </p>
+                            <div className="relative mt-2">
+                                <Mail className="absolute left-3 top-3 text-blue-400 w-5 h-5" />
+                                <input
+                                    type="text"
+                                    ref={sal}
+                                    placeholder="e.g., Dear Hiring Manager, Hello Team, etc."
+                                    className="w-full pl-10 pr-4 py-3 border border-blue-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400 text-gray-700"
+                                />
+                            </div>
+                            <div className="flex justify-end mt-4">
+                                <button
+                                    className="flex items-center space-x-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition duration-200 ease-in-out"
+                                    onClick={handleCoverLetterDownload}
+                                >
+                                    <Send className="w-4 h-4" />
+                                    <span>Continue</span>
+                                </button>
+                            </div>
+                        </DialogHeader>
+                    </DialogContent>
+                </Dialog>
             </div>
 
             <button

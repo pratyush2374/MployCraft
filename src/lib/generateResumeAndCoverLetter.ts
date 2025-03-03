@@ -21,7 +21,7 @@ const generateResumeAndCoverLetter = async (
 
     const schema: ObjectSchema = {
         type: SchemaType.OBJECT,
-        description: "asd",
+        description: "Resume and cover letter",
         properties: {
             professionalSummaryRC: {
                 type: SchemaType.STRING,

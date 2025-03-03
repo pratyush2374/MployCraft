@@ -103,7 +103,7 @@ export async function GET(req: NextRequest) {
         return new NextResponse(pdfBuffer, {
             headers: {
                 "Content-Type": "application/pdf",
-                "Content-Disposition": 'attachment; filename="styled-pdf.pdf"',
+                "Content-Disposition": `attachment; "${user?.fullName || ""} - Resume.pdf"`,
             },
         });
     } catch (error) {
