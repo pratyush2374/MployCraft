@@ -35,7 +35,7 @@ const GeneratedContent: React.FC<GeneratedResumeContentProps> = ({
     const handleResumeDownload = () => {
         if (data.rcid) {
             window.open(
-                `http://localhost:3000/api/generate-pdf-resume?rcid=${data.rcid}`,
+                `/api/generate-pdf-resume?rcid=${data.rcid}`,
                 "_blank"
             );
         } else {
@@ -51,7 +51,7 @@ const GeneratedContent: React.FC<GeneratedResumeContentProps> = ({
 
         if (data.rcid) {
             window.open(
-                `http://localhost:3000/api/generate-pdf-cover-letter?rcid=${data.rcid}&sal=${sal.current.value}`,
+                `${process.env.NEXT_URL}/api/generate-pdf-cover-letter?rcid=${data.rcid}&sal=${sal.current.value}`,
                 "_blank"
             );
         } else {

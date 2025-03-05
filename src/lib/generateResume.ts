@@ -15,7 +15,7 @@ const generateResume = async (userData: any): Promise<AiResponse> => {
     // Define the schema for the response
     const schema: ObjectSchema = {
         type: SchemaType.OBJECT,
-        description: "asd",
+        description: "Resume",
         properties: {
             professionalSummary: {
                 type: SchemaType.STRING,
