@@ -32,7 +32,7 @@ const SignIn: React.FC = () => {
             password: data.password,
         });
         toast(new Toast("Success", "Logged in successfully...Redirecting"));
-        router.push("/dashboard");
+        router.push("/dashboard/home");
     };
 
     return (

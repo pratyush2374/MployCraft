@@ -1,15 +1,16 @@
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
     Briefcase,
-    Calendar,
     DollarSign,
     FileText,
     CheckCircle2,
     Save,
 } from "lucide-react";
+import usePost from "@/hooks/usePost";
+import Toast from "@/lib/toastClass";
 
 interface EditApplicationProps {
     id: string;
@@ -23,7 +24,7 @@ interface EditApplicationProps {
 
 interface EditFormData {
     id: string;
-    companyName: string;
+    company: string;
     position: string;
     status:
         | "APPLIED"
@@ -62,6 +63,7 @@ const EditApplication: React.FC<EditApplicationProps> = ({
     salary,
 }) => {
     const { toast } = useToast();
+    const { post, error } = usePost("/api/edit-application");
 
     const {
         register,
@@ -69,7 +71,7 @@ const EditApplication: React.FC<EditApplicationProps> = ({
         formState: { isSubmitting, errors },
     } = useForm<EditFormData>({
         defaultValues: {
-            companyName: company,
+            company: company,
             position: position,
             status: status as EditFormData["status"],
             salary: salary ? parseFloat(salary) : undefined,
@@ -79,11 +81,25 @@ const EditApplication: React.FC<EditApplicationProps> = ({
         },
     });
 
-    const onSubmit = (data: EditFormData) => {
-        console.log(data);
-        console.log(id);
-        console.log(rcid);
+    const onSubmit = async (data: EditFormData) => {
+        await post({ ...data, id, rcid });
+        toast(new Toast("Success", "Application updated successfully"));
+        setTimeout(() => {
+            window.location.reload();
+        }, 500);
     };
+
+    useEffect(() => {
+        if (error) {
+            toast(
+                new Toast(
+                    "Error",
+                    error || "Something went wrong while updating application",
+                    "destructive"
+                )
+            );
+        }
+    }, [error]);
 
     return (
         <div className="p-2">
@@ -102,15 +118,15 @@ const EditApplication: React.FC<EditApplicationProps> = ({
                     </label>
                     <input
                         type="text"
-                        {...register("companyName", {
+                        {...register("company", {
                             required: "Company name is required",
                         })}
                         className="w-full px-3 py-2 border border-blue-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                         placeholder="Enter company name"
                     />
-                    {errors.companyName && (
+                    {errors.company && (
                         <p className="text-red-500 text-xs mt-1">
-                            {errors.companyName.message}
+                            {errors.company.message}
                         </p>
                     )}
                 </div>

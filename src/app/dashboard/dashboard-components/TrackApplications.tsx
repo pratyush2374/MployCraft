@@ -15,8 +15,9 @@ import {
     CheckCircle2,
     XCircle,
     AlertTriangle,
+    FileText,
 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
     Dialog,
     DialogContent,
@@ -33,8 +34,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import EditApplication from "./EditApplication";
+import usePost from "@/hooks/usePost";
 
-const getStatusIcon = (status : string) => {
+const getStatusIcon = (status: string) => {
     switch (status.toLowerCase()) {
         case "applied":
             return <CheckCircle2 className="text-blue-500 w-5 h-5" />;
@@ -45,17 +47,29 @@ const getStatusIcon = (status : string) => {
         case "rejected":
             return <XCircle className="text-red-500 w-5 h-5" />;
         default:
-            return <AlertTriangle className="text-gray-500 w-5 h-5" />;
+            return <FileText className="text-gray-500 w-5 h-5" />;
     }
+};
+
+const toSentenceCase = (text: string) => {
+    if (text) {
+        return text
+            .toLowerCase()
+            .replace(/_/g, " ")
+            .replace(/\b\w/g, (char) => char.toUpperCase());
+    }
+
+    return "";
 };
 
 const TrackApplications = () => {
     const { get, loading, resData, error } = useGet("/api/user-applications");
     const { toast } = useToast();
-    const [selectedApp, setSelectedApp] = useState(null);
-
+    const { post, error: deleteError } = usePost("/api/delete-application");
     useEffect(() => {
-        get();
+        const data = get();
+        "67c1b835c08a0f9ada22d6fa"
+        console.log(data);
     }, []);
 
     useEffect(() => {
@@ -68,17 +82,31 @@ const TrackApplications = () => {
                 )
             );
         }
-    }, [error]);
+        if (deleteError) {
+            toast(
+                new Toast(
+                    "Error",
+                    deleteError ||
+                        "Some error occurred while deleting application",
+                    "destructive"
+                )
+            );
+        }
+    }, [error, deleteError]);
 
-    const deleteApplication = () => {
-        console.log("delete btn clicked");
+    const deleteApplication = async (id: string, rcid : string) => {
+        await post({ id, rcid });
+        toast(new Toast("Success", "Application deleted successfully"));
+        setTimeout(() => {
+            window.location.reload();
+        }, 500);
     };
 
-    const downloadResume = (rcid : string) => {
+    const downloadResume = (rcid: string) => {
         window.open(`/api/generate-pdf-resume?rcid=${rcid}`, "_blank");
     };
 
-    const downloadCoverLetter = (rcid : string) => {
+    const downloadCoverLetter = (rcid: string) => {
         window.open(
             `${process.env.NEXT_URL}/api/generate-pdf-cover-letter?rcid=${rcid}`,
             "_blank"
@@ -111,7 +139,7 @@ const TrackApplications = () => {
                     </div>
                 ) : (
                     <div className="space-y-6">
-                        {resData?.data.map((applications : any) => (
+                        {resData?.data.map((applications: any) => (
                             <div
                                 key={applications.id}
                                 className="bg-white border-l-4 border-blue-500 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 relative group"
@@ -211,8 +239,10 @@ const TrackApplications = () => {
                                                 </DialogDescription>
                                                 <div className="flex justify-end space-x-2 mt-4">
                                                     <button
-                                                        onClick={
-                                                            deleteApplication
+                                                        onClick={() =>
+                                                            deleteApplication(
+                                                                applications.id, applications.rcid
+                                                            )
                                                         }
                                                         className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition flex items-center space-x-2"
                                                     >
@@ -234,7 +264,9 @@ const TrackApplications = () => {
                                             Status:
                                         </span>
                                         <span className="font-semibold">
-                                            {applications.status}
+                                            {toSentenceCase(
+                                                applications.status
+                                            )}
                                         </span>
                                     </div>
                                     <div className="flex items-center space-x-2">
@@ -243,9 +275,9 @@ const TrackApplications = () => {
                                             Applied:
                                         </span>
                                         <span>
-                                        {new Date(
-                                            applications.appliedAt
-                                        ).toDateString()}
+                                            {new Date(
+                                                applications.appliedAt
+                                            ).toDateString()}
                                         </span>
                                     </div>
                                     {applications?.salary && (
@@ -254,9 +286,7 @@ const TrackApplications = () => {
                                             <span className="font-medium">
                                                 Salary:
                                             </span>
-                                            <span>
-                                            {applications.salary}
-                                            </span>
+                                            <span>{applications.salary}</span>
                                         </div>
                                     )}
                                 </div>
