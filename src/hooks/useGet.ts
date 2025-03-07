@@ -12,7 +12,7 @@ interface ApiResponse {
 const useGet = (url: string) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [resData, setResData] = useState<ApiResponse>();
+    const [resData, setResData] = useState<ApiResponse | any>();
 
     const get = async () => {
         setLoading(true);

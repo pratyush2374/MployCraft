@@ -67,9 +67,7 @@ const TrackApplications = () => {
     const { toast } = useToast();
     const { post, error: deleteError } = usePost("/api/delete-application");
     useEffect(() => {
-        const data = get();
-        "67c1b835c08a0f9ada22d6fa"
-        console.log(data);
+        get();
     }, []);
 
     useEffect(() => {
@@ -94,7 +92,7 @@ const TrackApplications = () => {
         }
     }, [error, deleteError]);
 
-    const deleteApplication = async (id: string, rcid : string) => {
+    const deleteApplication = async (id: string, rcid: string) => {
         await post({ id, rcid });
         toast(new Toast("Success", "Application deleted successfully"));
         setTimeout(() => {
@@ -115,8 +113,8 @@ const TrackApplications = () => {
 
     if (loading) {
         return (
-            <div className="flex justify-center items-center h-screen">
-                <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent shadow-lg"></div>
+            <div className="flex items-center justify-center min-h-[50vh]">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
             </div>
         );
     }
@@ -241,7 +239,8 @@ const TrackApplications = () => {
                                                     <button
                                                         onClick={() =>
                                                             deleteApplication(
-                                                                applications.id, applications.rcid
+                                                                applications.id,
+                                                                applications.rcid
                                                             )
                                                         }
                                                         className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition flex items-center space-x-2"

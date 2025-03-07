@@ -64,7 +64,6 @@ const BasicDetails: React.FC<BasicDetailsProps> = ({ setTab }) => {
         "Portfolio",
         "Twitter",
         "Instagram",
-        "Threads",
         "Facebook",
         "Others",
     ];
