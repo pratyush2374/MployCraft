@@ -107,7 +107,7 @@ const QuickApply = () => {
     if (!data) return <h1>No data found</h1>;
 
     return (
-        <div className="max-w-6xl mx-auto p-6">
+        <div className="max-w-4xl mx-auto p-6">
             {/* Header */}
             <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center">
                 <div>
