@@ -115,6 +115,7 @@ const EditOtherDetails: React.FC<OtherDetails> = ({
     };
 
     useEffect(() => {
+        let timeout: NodeJS.Timeout;
         if (error) {
             toast(
                 new Toast(
@@ -126,7 +127,12 @@ const EditOtherDetails: React.FC<OtherDetails> = ({
         }
         if (resData) {
             toast(new Toast("Success", "Data saved successfully"));
+            timeout = setTimeout(() => {
+                window.location.reload();
+            }, 500);
         }
+
+        return () => clearInterval(timeout);
     }, [error, resData, toast]);
 
     return (
