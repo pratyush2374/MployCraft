@@ -1070,7 +1070,7 @@ const ProfileSettings = () => {
                                 </button>
                             </DialogTrigger>
                             <DialogContent className="sm:max-w-md scale-[.8]">
-                                <DialogTitle className="text-xl font-semibold text-gray-800">
+                                <DialogTitle className="text-sm md:text-xl font-semibold text-gray-800">
                                     Add Certification
                                 </DialogTitle>
                                 <ModifyCertification purpose="Add" />
@@ -1201,7 +1201,7 @@ const ProfileSettings = () => {
                             <div className="mt-6">
                                 <Dialog>
                                     <DialogTrigger asChild>
-                                        <button className="inline-flex items-center rounded-md border border-transparent bg-blue-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                        <button className="inline-flex items-center rounded-md border border-transparent bg-blue-500 px-4 py-2 text-xs md:text-sm font-medium text-white shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                                             <Plus className="-ml-1 mr-2 h-5 w-5" />
                                             Add Certification
                                         </button>

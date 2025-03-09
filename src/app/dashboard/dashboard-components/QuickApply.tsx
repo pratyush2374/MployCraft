@@ -107,7 +107,7 @@ const QuickApply = () => {
     if (!data) return <h1>No data found</h1>;
 
     return (
-        <div className="max-w-4xl mx-auto p-6">
+        <div className="max-w-4xl mx-auto p-2 md:p-6">
             {/* Header */}
             <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center">
                 <div>
@@ -147,7 +147,7 @@ const QuickApply = () => {
             </div>
 
             {/* Personal Information */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
+            <div className="bg-white md:rounded-xl md:shadow-sm md:border md:border-gray-100 md:p-6 mb-8">
                 <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
                     <User className="w-5 h-5 mr-2 text-blue-500" />
                     Personal Information
@@ -202,7 +202,7 @@ const QuickApply = () => {
 
             {/* Professional Summary */}
             {data.professionalSummary && (
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
+                <div className="bg-white md:rounded-xl md:shadow-sm md:border md:border-gray-100 md:p-6 mb-8">
                     <h2 className="text-xl font-semibold text-gray-800 mb-4">
                         Professional Summary
                     </h2>
@@ -237,7 +237,7 @@ const QuickApply = () => {
 
             {/* Skills */}
             {data.skills && data.skills.length > 0 && (
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
+                <div className="bg-white md:rounded-xl md:shadow-sm md:border md:border-gray-100 md:p-6 mb-8">
                     <h2 className="text-xl font-semibold text-gray-800 mb-4">
                         Skills
                     </h2>
@@ -537,7 +537,7 @@ const QuickApply = () => {
 
             {/* Links */}
             {data.links && data.links.length > 0 && (
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
+                <div className="bg-white md:rounded-xl md:shadow-sm md:border md:border-gray-100 md:p-6 mb-8">
                     <h2 className="text-xl font-semibold text-gray-800 mb-4">
                         Online Profiles
                     </h2>
@@ -679,7 +679,7 @@ const AccordionSection = ({
     const [isOpen, setIsOpen] = useState(defaultOpen);
 
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
+        <div className="bg-white md:rounded-xl md:shadow-sm md:border md:border-gray-100 md:p-6 mb-8">
             <button
                 className="flex items-center justify-between w-full text-left focus:outline-none"
                 onClick={() => setIsOpen(!isOpen)}

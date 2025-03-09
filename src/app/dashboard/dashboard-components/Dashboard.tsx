@@ -52,7 +52,7 @@ const Dashboard: React.FC = () => {
             </span>
 
             <main
-                className={`p-10 pt-20 md:w-3/4 m-auto ${
+                className={`px-4 md:p-10 pt-20 md:w-3/4 m-auto ${
                     sidebarOpen ? "md:ml-72" : ""
                 }`}
                 onClick={handleClickOnMobile}

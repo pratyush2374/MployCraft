@@ -65,7 +65,7 @@ const DashboardSidebar: React.FC<DashboardSidebar> = ({ sidebarOpen }) => {
 
     return (
         <aside
-            className={`fixed top-0 left-0 h-screen bg-white shadow-lg w-64 transition-transform duration-300 ease-in-out ${
+            className={`z-[9999] fixed top-0 left-0 h-screen bg-white shadow-lg w-64 transition-transform duration-300 ease-in-out ${
                 !sidebarOpen ? "-translate-x-full" : "translate-x-0"
             }`}
         >

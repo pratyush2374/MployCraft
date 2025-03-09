@@ -123,8 +123,8 @@ const TrackApplications = () => {
         <div className="min-h-screen max-w-4xl m-auto">
             <div className="container mx-auto">
                 <div className="flex items-center mb-10 space-x-4">
-                    <Briefcase className="w-10 h-10 text-blue-600" />
-                    <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+                    <Briefcase className="w-6 h-6 md:w-10 md:h-10 text-blue-600" />
+                    <h1 className="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
                         Your Job Applications
                     </h1>
                 </div>
@@ -142,7 +142,7 @@ const TrackApplications = () => {
                                 key={applications.id}
                                 className="bg-white border-l-4 border-blue-500 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 relative group"
                             >
-                                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <div className="absolute top-2 right-2 transition-opacity duration-300">
                                     <DropdownMenu>
                                         <DropdownMenuTrigger className="focus:outline-none">
                                             <MoreHorizontal className="text-gray-500 hover:text-blue-600" />
@@ -180,11 +180,11 @@ const TrackApplications = () => {
                                     <div className="flex-grow">
                                         <div className="flex items-center space-x-2 mb-1">
                                             {getStatusIcon(applications.status)}
-                                            <h2 className="text-2xl font-bold text-gray-800">
+                                            <h2 className="text-lg md:text-2xl font-bold text-gray-800">
                                                 {applications.company}
                                             </h2>
                                         </div>
-                                        <p className="text-gray-600 text-lg flex items-center space-x-2">
+                                        <p className="text-gray-600 text-sm md:text-lg flex items-center space-x-2">
                                             <Briefcase className="w-4 h-4 mr-2" />
                                             {applications.position}
                                         </p>
@@ -295,7 +295,7 @@ const TrackApplications = () => {
                                         <div className="flex items-start space-x-2">
                                             <AlertTriangle className="w-5 h-5 text-blue-500 mt-1" />
                                             <div>
-                                                <span className="font-semibold text-blue-700">
+                                                <span className="font-sm font-semibold text-blue-700">
                                                     Notes:
                                                 </span>
                                                 <p className="text-gray-700">

@@ -70,16 +70,16 @@ const ColdEmailing = () => {
     }, [error]);
 
     return (
-        <div className="p-6 max-w-4xl mx-auto">
+        <div className="p-2 md:p-6 max-w-4xl mx-auto">
             <div className="flex items-center gap-2 mb-6">
                 <Mail className="text-blue-500 w-6 h-6" />
-                <h1 className="text-2xl font-bold">Cold Emailing Generator</h1>
+                <h1 className="text-xl md:text-2xl font-bold">Cold Emailing Generator</h1>
             </div>
 
             {!emailGenerated ? (
                 <div className="flex flex-col gap-8">
-                    <div className="bg-white rounded-lg shadow-md p-8">
-                        <h2 className="text-xl font-semibold mb-4">
+                    <div className="bg-white rounded-lg md:shadow-md p-4 md:p-8">
+                        <h2 className="text-lg md:text-xl font-semibold mb-4">
                             Create Your Personalized Email
                         </h2>
                         <form
