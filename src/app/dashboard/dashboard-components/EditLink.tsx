@@ -1,6 +1,7 @@
 import { useToast } from "@/hooks/use-toast";
 import usePost from "@/hooks/usePost";
 import Toast from "@/lib/toastClass";
+import { Link } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
@@ -42,24 +43,34 @@ const EditLink: React.FC<EditLinkProps> = ({ link: { id, type, url } }) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div>
-        <label htmlFor="url" className="block text-sm font-medium text-gray-700">
-          Edit url for {type}
+        <label htmlFor="url" className="block text-sm font-medium text-gray-700 mb-1">
+          Edit URL for {type}
         </label>
-        <input
-          id="url"
-          type="url"
-          {...register("url", { required: "URL is required" })}
-          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200 focus:border-indigo-300"
-        />
-        {errors.url && <p className="text-red-500 text-sm mt-1">{errors.url.message}</p>}
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <Link className="h-4 w-4 text-gray-400" />
+          </div>
+          <input
+            id="url"
+            type="url"
+            className="pl-10 w-full p-2.5 bg-white border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            {...register('url', { required: 'URL is required' })}
+          />
+        </div>
+        {errors.url && (
+          <p className="mt-1 text-sm text-red-500">{errors.url.message}</p>
+        )}
       </div>
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 disabled:opacity-50"
-      >
-        {isSubmitting ? "Updating..." : "Update Link"}
-      </button>
+      
+      <div className="pt-2">
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full bg-blue-500 text-white py-2.5 px-4 rounded-md hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+        >
+          {isSubmitting ? 'Updating...' : 'Update Link'}
+        </button>
+      </div>
     </form>
   );
 };

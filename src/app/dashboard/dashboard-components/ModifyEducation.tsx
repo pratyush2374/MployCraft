@@ -4,6 +4,14 @@ import usePost from "@/hooks/usePost";
 import Toast from "@/lib/toastClass";
 import { useEffect } from "react";
 import { Education } from "./ProfileSettings";
+import {
+    BookOpen,
+    Calendar,
+    Award,
+    Building,
+    Trophy,
+    AlertCircle,
+} from "lucide-react";
 
 interface ModifyEducationProps {
     education?: Education;
@@ -73,95 +81,145 @@ const ModifyEducation: React.FC<ModifyEducationProps> = ({
     }, [resData, error, toast]);
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div>
-                <label className="block text-sm font-medium text-gray-700">
-                    Institute Name
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 mt-3">
+            <div className="space-y-1.5">
+                <label className="flex items-center text-sm font-medium text-gray-700">
+                    <Building className="h-4 w-4 text-blue-500 mr-1.5" />
+                    Institute Name<span className="text-red-500 ml-0.5">*</span>
                 </label>
                 <input
                     type="text"
+                    placeholder="E.g., Harvard University"
                     {...register("instituteName", {
                         required: "Institute Name is required",
                     })}
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                    className="w-full p-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                 />
                 {errors.instituteName && (
-                    <p className="text-red-500 text-sm">
+                    <p className="text-red-500 text-sm flex items-center mt-1">
+                        <AlertCircle className="h-3.5 w-3.5 mr-1" />
                         {errors.instituteName.message}
                     </p>
                 )}
             </div>
 
-            <div>
-                <label className="block text-sm font-medium text-gray-700">
-                    Major
+            <div className="space-y-1.5">
+                <label className="flex items-center text-sm font-medium text-gray-700">
+                    <BookOpen className="h-4 w-4 text-blue-500 mr-1.5" />
+                    Major/Field of Study
                 </label>
                 <input
                     type="text"
+                    placeholder="E.g., Computer Science"
                     {...register("major")}
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                    className="w-full p-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                 />
             </div>
 
-            <div>
-                <label className="block text-sm font-medium text-gray-700">
-                    Score
-                </label>
-                <input
-                    type="text"
-                    {...register("score")}
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
-                />
-                <label
-                    htmlFor="scoreType"
-                    className="block text-sm font-medium text-gray-700"
-                >
-                    Score Type
-                </label>
-                <select id="scoreType" {...register("scoreType")}>
-                    <option value="CGPA">CGPA</option>
-                    <option value="Percentage">Percentage</option>
-                    <option value="GPA">GPA</option>
-                </select>
+            <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                    <label className="flex items-center text-sm font-medium text-gray-700">
+                        <Award className="h-4 w-4 text-blue-500 mr-1.5" />
+                        Score
+                    </label>
+                    <input
+                        type="text"
+                        placeholder="E.g., 3.8"
+                        {...register("score")}
+                        className="w-full p-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                    />
+                </div>
+
+                <div className="space-y-1.5">
+                    <label className="flex items-center text-sm font-medium text-gray-700">
+                        <Award className="h-4 w-4 text-blue-500 mr-1.5" />
+                        Score Type
+                    </label>
+                    <select
+                        {...register("scoreType")}
+                        className="w-full p-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white transition-all"
+                    >
+                        <option value="CGPA">CGPA</option>
+                        <option value="PERCENTAGE">PERCENTAGE</option>
+                        <option value="GPA">GPA</option>
+                    </select>
+                </div>
             </div>
 
-            <div>
-                <label className="block text-sm font-medium text-gray-700">
-                    Start Date
-                </label>
-                <input
-                    type="date"
-                    {...register("startDate")}
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
-                />
+            <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                    <label className="flex items-center text-sm font-medium text-gray-700">
+                        <Calendar className="h-4 w-4 text-blue-500 mr-1.5" />
+                        Start Date
+                    </label>
+                    <input
+                        type="date"
+                        {...register("startDate")}
+                        className="w-full p-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                    />
+                </div>
 
-                <label className="block text-sm font-medium text-gray-700">
-                    End Date
-                </label>
-                <input
-                    type="date"
-                    {...register("endDate")}
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
-                />
+                <div className="space-y-1.5">
+                    <label className="flex items-center text-sm font-medium text-gray-700">
+                        <Calendar className="h-4 w-4 text-blue-500 mr-1.5" />
+                        End Date
+                    </label>
+                    <input
+                        type="date"
+                        {...register("endDate")}
+                        className="w-full p-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                    />
+                </div>
             </div>
 
-            <div>
-                <label className="block text-sm font-medium text-gray-700">
+            <div className="space-y-1.5">
+                <label className="flex items-center text-sm font-medium text-gray-700">
+                    <Trophy className="h-4 w-4 text-blue-500 mr-1.5" />
                     Achievements
                 </label>
                 <textarea
+                    placeholder="List your key achievements, honors, or relevant activities"
                     {...register("achievements")}
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                    rows={3}
+                    className="w-full p-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                 />
             </div>
 
-            <button
-                type="submit"
-                disabled={isSubmitting}
-                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 disabled:opacity-50"
-            >
-                {isSubmitting ? `${purpose}ing...` : `${purpose} Education`}
-            </button>
+            <div className="pt-2">
+                <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium px-4 py-2.5 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                >
+                    {isSubmitting ? (
+                        <>
+                            <svg
+                                className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                            >
+                                <circle
+                                    className="opacity-25"
+                                    cx="12"
+                                    cy="12"
+                                    r="10"
+                                    stroke="currentColor"
+                                    strokeWidth="4"
+                                ></circle>
+                                <path
+                                    className="opacity-75"
+                                    fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                ></path>
+                            </svg>
+                            {`${purpose}ing...`}
+                        </>
+                    ) : (
+                        `${purpose} Education`
+                    )}
+                </button>
+            </div>
         </form>
     );
 };
