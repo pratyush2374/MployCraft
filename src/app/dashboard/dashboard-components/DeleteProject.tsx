@@ -9,7 +9,7 @@ interface DeleteProjectProps {
     project : Project
 }
 const DeleteProject: React.FC<DeleteProjectProps> = ({ project : {id, title} }) => {
-    const { post, error, resData } = usePost("/api/delete-project");
+    const { post, error, resData, loading } = usePost("/api/delete-project");
     const { toast } = useToast();
 
     const deleteProject = async () => {
@@ -19,7 +19,7 @@ const DeleteProject: React.FC<DeleteProjectProps> = ({ project : {id, title} }) 
     useEffect(() => {
         let timeout: NodeJS.Timeout;
         if (resData && resData.success) {
-            toast(new Toast("Success", "Link deleted successfully"));
+            toast(new Toast("Success", "Project deleted successfully"));
             timeout = setTimeout(() => {
                 window.location.reload();
             }, 500);
@@ -57,7 +57,7 @@ const DeleteProject: React.FC<DeleteProjectProps> = ({ project : {id, title} }) 
                     onClick={deleteProject}
                     className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-600"
                 >
-                    Delete
+                    {loading ? "Deleting..." : "Delete"}
                 </button>
             </div>
         </div>

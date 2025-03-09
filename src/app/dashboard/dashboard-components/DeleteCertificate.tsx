@@ -12,7 +12,7 @@ interface DeleteCertificateProps {
 const DeleteCertificate: React.FC<DeleteCertificateProps> = ({
     certificate: { id, name },
 }) => {
-    const { post, error, resData } = usePost("/api/delete-certification");
+    const { post, error, resData, loading } = usePost("/api/delete-certification");
     const { toast } = useToast();
 
     const deleteCertificate = async () => {
@@ -60,7 +60,7 @@ const DeleteCertificate: React.FC<DeleteCertificateProps> = ({
                     onClick={deleteCertificate}
                     className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-600"
                 >
-                    Delete
+                    {loading ? "Deleting..." : "Delete"}
                 </button>
             </div>
         </div>
