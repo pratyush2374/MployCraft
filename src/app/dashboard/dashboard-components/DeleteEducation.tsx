@@ -22,7 +22,7 @@ const DeleteEducation: React.FC<DeleteEducationProps> = ({
     useEffect(() => {
         let timeout: NodeJS.Timeout;
         if (resData && resData.success) {
-            toast(new Toast("Success", "Link deleted successfully"));
+            toast(new Toast("Success", "Education deleted successfully"));
             timeout = setTimeout(() => {
                 window.location.reload();
             }, 500);

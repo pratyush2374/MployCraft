@@ -22,7 +22,7 @@ const DeleteCertificate: React.FC<DeleteCertificateProps> = ({
     useEffect(() => {
         let timeout: NodeJS.Timeout;
         if (resData && resData.success) {
-            toast(new Toast("Success", "Link deleted successfully"));
+            toast(new Toast("Success", "Certification deleted successfully"));
             timeout = setTimeout(() => {
                 window.location.reload();
             }, 500);
