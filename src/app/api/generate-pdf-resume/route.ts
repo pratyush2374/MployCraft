@@ -6,6 +6,9 @@ import chromium from "@sparticuz/chromium";
 import { WorkExperience } from "@prisma/client";
 import getExperiencedResume from "./getExperiencedResume";
 
+export const runtime = 'nodejs'
+export const maxDuration = 59
+
 export async function GET(req: NextRequest) {
     try {
         const browser = await puppeteer.launch({

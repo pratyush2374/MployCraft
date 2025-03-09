@@ -3,6 +3,9 @@ import { NextRequest, NextResponse } from "next/server";
 import chromium from "@sparticuz/chromium";
 import puppeteer from "puppeteer";
 
+export const runtime = 'nodejs'
+export const maxDuration = 59
+
 export async function GET(req: NextRequest) {
     try {
         const browser = await puppeteer.launch({
