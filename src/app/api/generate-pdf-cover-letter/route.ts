@@ -4,7 +4,10 @@ import puppeteer from "puppeteer";
 
 export async function GET(req: NextRequest) {
     try {
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({
+            headless: true,
+            args: ["--no-sandbox", "--disable-setuid-sandbox"],
+        });
         const page = await browser.newPage();
         const searchParams = req.nextUrl.searchParams;
         const rcid = searchParams.get("rcid");

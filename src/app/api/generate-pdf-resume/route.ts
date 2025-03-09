@@ -7,7 +7,10 @@ import getExperiencedResume from "./getExperiencedResume";
 
 export async function GET(req: NextRequest) {
     try {
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({
+            headless: true,
+            args: ["--no-sandbox", "--disable-setuid-sandbox"],
+        });
         const page = await browser.newPage();
         const searchParams = req.nextUrl.searchParams;
         const rcid = searchParams.get("rcid");
@@ -79,7 +82,7 @@ export async function GET(req: NextRequest) {
             email: user.email,
             ...user.UserInfo,
             ...resume,
-            workExp
+            workExp,
         };
 
         let res;
@@ -103,7 +106,9 @@ export async function GET(req: NextRequest) {
         return new NextResponse(pdfBuffer, {
             headers: {
                 "Content-Type": "application/pdf",
-                "Content-Disposition": `attachment; "${user?.fullName || ""} - Resume.pdf"`,
+                "Content-Disposition": `attachment; "${
+                    user?.fullName || ""
+                } - Resume.pdf"`,
             },
         });
     } catch (error) {
