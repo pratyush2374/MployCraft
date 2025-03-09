@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
 
         await prisma.resumesAndCoverLetters.create({
             data: {
-                professionalSummary: data.professionalSummary,
+                professionalSummaryRC: data.professionalSummary,
                 experience: data.experience,
                 isGeneral: true,
                 user: { connect: { id: userId } },

@@ -3,9 +3,10 @@
 
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { AlertTriangle, ArrowLeft, RefreshCw } from "lucide-react";
+import { AlertTriangle, ArrowLeft } from "lucide-react";
+import { Suspense } from "react";
 
-export default function ErrorPage() {
+function ErrorContent() {
     const searchParams = useSearchParams();
     const errorMessage = searchParams.get("msg") || "An unknown error occurred";
 
@@ -47,5 +48,19 @@ export default function ErrorPage() {
                 <p>If this error persists, please contact support.</p>
             </div>
         </div>
+    );
+}
+
+export default function ErrorPage() {
+    return (
+        <Suspense
+            fallback={
+                <div className="min-h-screen flex items-center justify-center">
+                    <p>Loading error details...</p>
+                </div>
+            }
+        >
+            <ErrorContent />
+        </Suspense>
     );
 }
