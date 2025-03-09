@@ -2,14 +2,17 @@ import prisma from "@/lib/prismaClient";
 import { NextRequest, NextResponse } from "next/server";
 import puppeteer from "puppeteer";
 import getFresherResume from "./getFresherResume";
+import chromium from "@sparticuz/chromium";
 import { WorkExperience } from "@prisma/client";
 import getExperiencedResume from "./getExperiencedResume";
 
 export async function GET(req: NextRequest) {
     try {
         const browser = await puppeteer.launch({
+            args: chromium.args,
+            defaultViewport: chromium.defaultViewport,
+            executablePath: await chromium.executablePath(),
             headless: true,
-            args: ["--no-sandbox", "--disable-setuid-sandbox"],
         });
         const page = await browser.newPage();
         const searchParams = req.nextUrl.searchParams;

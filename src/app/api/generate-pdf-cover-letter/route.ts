@@ -1,12 +1,15 @@
 import prisma from "@/lib/prismaClient";
 import { NextRequest, NextResponse } from "next/server";
+import chromium from "@sparticuz/chromium";
 import puppeteer from "puppeteer";
 
 export async function GET(req: NextRequest) {
     try {
         const browser = await puppeteer.launch({
+            args: chromium.args,
+            defaultViewport: chromium.defaultViewport,
+            executablePath: await chromium.executablePath(),
             headless: true,
-            args: ["--no-sandbox", "--disable-setuid-sandbox"],
         });
         const page = await browser.newPage();
         const searchParams = req.nextUrl.searchParams;
