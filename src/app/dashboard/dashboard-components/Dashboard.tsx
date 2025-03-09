@@ -3,7 +3,7 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import DashboardSidebar from "./DashboardSidebar";
 import { PanelRightOpen } from "lucide-react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 const Home = lazy(() => import("./Home"));
 const ColdEmailing = lazy(() => import("./ColdEmailing"));
@@ -14,6 +14,7 @@ const ProfileSettings = lazy(() => import("./ProfileSettings"));
 const Dashboard: React.FC = () => {
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
     const { section } = useParams<{ section: string }>();
+    const router = useRouter();
 
     useEffect(() => {
         let int: NodeJS.Timeout;
@@ -23,6 +24,10 @@ const Dashboard: React.FC = () => {
             int = setTimeout(() => setSidebarOpen(false), 500);
         }
 
+        const ls = localStorage.getItem("fromSignIn");
+        if (ls) {
+            router.push("/user-input");
+        }
         return () => clearTimeout(int);
     }, []);
 

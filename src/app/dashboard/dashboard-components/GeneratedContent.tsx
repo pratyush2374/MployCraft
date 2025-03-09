@@ -34,10 +34,7 @@ const GeneratedContent: React.FC<GeneratedResumeContentProps> = ({
 
     const handleResumeDownload = () => {
         if (data.rcid) {
-            window.open(
-                `/api/generate-pdf-resume?rcid=${data.rcid}`,
-                "_blank"
-            );
+            window.open(`/api/generate-pdf-resume?rcid=${data.rcid}`, "_blank");
         } else {
             toast(new Toast("Error", "Something went wrong", "destructive"));
         }
@@ -51,7 +48,7 @@ const GeneratedContent: React.FC<GeneratedResumeContentProps> = ({
 
         if (data.rcid) {
             window.open(
-                `${process.env.NEXT_URL}/api/generate-pdf-cover-letter?rcid=${data.rcid}&sal=${sal.current.value}`,
+                `/api/generate-pdf-cover-letter?rcid=${data.rcid}&sal=${sal.current.value}`,
                 "_blank"
             );
         } else {
@@ -114,7 +111,7 @@ const GeneratedContent: React.FC<GeneratedResumeContentProps> = ({
                         <DialogHeader className="space-y-4">
                             <div className="flex items-center space-x-2">
                                 <MessageSquare className="text-blue-500 w-5 h-5" />
-                                <DialogTitle>
+                                <DialogTitle asChild>
                                     <h1 className="text-xl font-semibold text-gray-800">
                                         Customize Your Greeting
                                     </h1>

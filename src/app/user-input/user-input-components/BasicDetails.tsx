@@ -187,7 +187,7 @@ const BasicDetails: React.FC<BasicDetailsProps> = ({ setTab }) => {
                     Basic Details
                 </h1>
                 <h2 className="text-xl font-semibold text-gray-600">
-                    Step 3/3
+                    Step 1/3
                 </h2>
             </div>
 
