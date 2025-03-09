@@ -6,11 +6,13 @@ import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 interface DeleteEducationProps {
-    education : Education
+    education: Education;
 }
 
-const DeleteEducation : React.FC<DeleteEducationProps> = ({education : {id, instituteName}}) => {
-    const { post, error, resData } = usePost("/api/delete-certification");
+const DeleteEducation: React.FC<DeleteEducationProps> = ({
+    education: { id, instituteName },
+}) => {
+    const { post, error, resData, loading } = usePost("/api/delete-education");
     const { toast } = useToast();
 
     const deleteEducation = async () => {
@@ -45,7 +47,8 @@ const DeleteEducation : React.FC<DeleteEducationProps> = ({education : {id, inst
                 </div>
                 <div>
                     <h2 className="text-base font-medium text-gray-800">
-                        Are you sure you want to delete you work education at {instituteName}?
+                        Are you sure you want to delete you work education at{" "}
+                        {instituteName}?
                     </h2>
                     <p className="mt-1 text-sm text-gray-500">
                         This action cannot be undone.
@@ -58,11 +61,11 @@ const DeleteEducation : React.FC<DeleteEducationProps> = ({education : {id, inst
                     onClick={deleteEducation}
                     className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-600"
                 >
-                    Delete
+                    {loading ? "Deleting..." : "Delete"}
                 </button>
             </div>
         </div>
     );
-}
+};
 
 export default DeleteEducation;
