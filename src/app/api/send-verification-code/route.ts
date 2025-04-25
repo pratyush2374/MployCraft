@@ -5,6 +5,9 @@ import sendEmail from "@/lib/sendEmail";
 import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 
+export const runtime = 'nodejs'
+export const maxDuration = 59
+
 export async function POST(req: NextRequest) {
     try {
         const { fullName, email, password } = await req.json();

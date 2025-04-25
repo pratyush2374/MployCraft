@@ -3,6 +3,9 @@ import redisClient from "@/lib/redisClient";
 import sendEmail from "@/lib/sendEmail";
 import { NextRequest, NextResponse } from "next/server";
 
+export const runtime = 'nodejs'
+export const maxDuration = 59
+
 export async function POST(req: NextRequest) {
     try {
         const { email } = await req.json();
